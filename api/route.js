@@ -1,18 +1,13 @@
 var express = require('express'),
 	router = express.Router(),
-	yt = require('../yt/');
-
-router.use(function(req, res, next) {
-	console.log('Soudman accessed at: ' + Date.now());
-	next();
-});
+	yt = require('../yt');
 
 router.post('/', function(req, res) {
 	var post = req.params;
 });
 
 router.get('/', function(req, res) {
-	res.send('GET ACCESS');
+	res.send('Only POST allowed');
 });
 
 module.exports = router;

@@ -13,5 +13,8 @@
     "ffmpeg": "0.0.4",
     "mongoose": "^4.11.9",
     "ytdl-core": "^0.14.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }

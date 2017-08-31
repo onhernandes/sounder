@@ -1,6 +1,6 @@
 var express = require('express'),
 	app = express(),
-	routes = require('./route');
+	routes = require('./api/route.js');
 
 
 app.use('/', routes);
