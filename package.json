@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "ffmpeg": "0.0.4",
     "mongoose": "^4.11.9",
+    "q": "^1.5.0",
     "ytdl-core": "^0.14.4"
   },
   "devDependencies": {
