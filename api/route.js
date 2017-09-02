@@ -35,22 +35,22 @@ router.post('/api/', (req, res) => {
 
 	m.save(err => {
 		if (err) { console.log('Error adding: ' + post.url, err); }
-		console.log('Saving');
+		console.log('New music inserted');
 		res.end(JSON.stringify({status: 'created, will be downloaded soon'}));
 	});
 });
 
 // search
-router.get('/api/search/', (req, res) => {
-	Music.find({})
-	 .then(found => {
-	 	res.end(JSON.stringify(found));
-	 })
-	 .catch(err => console.log(err));
-});
+// router.get('/api/search/', (req, res) => {
+// 	Music.find({})
+// 	 .then(found => {
+// 	 	res.end(JSON.stringify(found));
+// 	 })
+// 	 .catch(err => console.log(err));
+// });
 
 router.get('/', (req, res) => {
-	t('pending');
+	t();
 	res.end();
 });
 
