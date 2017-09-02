@@ -8,10 +8,8 @@ musicSchema = new Schema({
 	album: { type: String, default: '' },
 	cover: { type: String, default: '' },
 	status: { type: String, default: 'pending' },
-	added_at: { type: Date, default: Date.now },
 	// wip: add to google drive
 	// google_drive: Boolean
-	downloaded_at: { type: Date }
 });
 
 /*

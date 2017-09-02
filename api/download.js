@@ -5,10 +5,10 @@ var mongoose = require('mongoose'),
 	ytdl = require('ytdl-core'),
 	fs = require('fs'),
 	path = require('path'),
+	logger = require('./logger.js'),
 	Music = require('./schema.js');
 
 mongoose.Promise = Q.Promise;
-
 // get downloading
 function getDownloading() {
 	return Music.find({status: 'downloading'}).exec();
@@ -26,7 +26,10 @@ function getTitle(obj) {
 			.then(inf => {
 				resolve(inf.title);
 			})
-			.catch(err => resolve(obj._id));
+			.catch(err => {
+				logger.log('error', 'Error on getting music title', [err, obj.url]);
+				resolve(obj._id);
+			});
 	});
 }
 
@@ -38,33 +41,41 @@ function download_mp3(pathh, url, id) {
 			.save(pathh)
 			.on('error', (err, stdout, stderr) => {
 				// get status back to 'pending'
+				logger.log('error', 'Error on downloading', [err, url]);
 				Music.findByIdAndUpdate(id, {status: 'pending'}, () => { return; });
 				resolve();
 			})
 			.on('start', cli => {
-				console.log('Start downloading');
+				logger.log('info', 'Start downloading', url);
 				// update status to 'downloading'
 				Music.findByIdAndUpdate(id, {status: 'downloading'}, () => { return; });
 				resolve();
 			})
 			.on('end', (stdout, stderr) => {
 				// update status to 'downloaded'
+				logger.log('info', 'End download', url);
 				Music.findByIdAndUpdate(id, {status: 'downloaded'}, () => { return; });
 				resolve();
-			})
+			});
 	});
 }
 
 // download
 function download(obj) {
-	var where = path.resolve(__dirname, '../music/'), file;
+	var where = path.resolve(__dirname, '../music/'), file = '';
 	return new Promise((resolve, reject) => {
+		logger.log('info', 'Start downloading', obj.url);
 		getTitle(obj)
 			.then(title => {
-				file = where+'/'+tt+'.mp3';
+				logger.log('info', 'Got title', obj.url);
+				file = path.resolve(__dirname, '../music/'+title+'.mp3');
 				return download_mp3(file, obj.url, obj._id);
 			})
-			.then(() => {
+			.then(a => {
+				return true;
+			})
+			.then(asd => {
+				logger.log('info', 'Writing metadata', obj.url);
 				var data = {}, opt = {}, up = false;
 
 				if (obj.title.length !== 0) { up = true; data.title = obj.title; data.label = obj.title; }
@@ -75,30 +86,24 @@ function download(obj) {
 				if (up) {
 					meta.write(file, data, opt, err => {
 						// if (err) console.log(err);
+						logger.log('error', 'Error on writing metadata', [err, obj.url]);
 						resolve();
 					});
 				} else {
 					resolve();
 				}
 			})
-			.catch(e => console.error);
+			.catch(e => {
+				logger.log('error', 'Error on downloading', [err, obj.url]);
+				resolve();
+			});
 	});
 }
 
 // wrapper
 function check() {
-	/*download({
-		_id: '59a9d25808eb503d4ed15d71',
-		url: 'https://www.youtube.com/watch?v=t7BG20q7wZs',
-		added_at: "2017-09-01T21:34:16.046Z", 
-		status: "pending", 
-		cover: "", 
-		album: "", 
-		author: "", 
-		title: ""
-	}).then(() => console.log('Successfull')).catch(err => console.error);*/
-	// return;
-	var trye = true, all = [], downloading = 0;
+	var all = [], downloading = 0;
+	logger.log('info', 'Start checking');
 	getDownloading()
 		.then(res => {
 			if (res.length < 5) {
@@ -110,6 +115,7 @@ function check() {
 		})
 		.then(pending => {
 			if (!pending || pending.length === 0) { return false; }
+			logger.log('info', 'Got some pending music', pending.length);
 			for (var i = 0; i < (pending.length - downloading); i++) {
 				all.push(download(pending[i]));
 			}
@@ -117,8 +123,9 @@ function check() {
 		})
 		.then(() => {
 			Promise.all(all);
+			logger.log('info', 'Done checking');
 		})
-		.catch(err => console.log(err));
+		.catch(err => logger.log('error', 'Error on checking', err));
 }
 
 module.exports = check;

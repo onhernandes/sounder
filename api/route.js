@@ -1,18 +1,16 @@
 var express = require('express'),
 	router = express.Router(),
-	yt = require('./yt.js'),
-	t = require('./download.js'),
 	mongoose = require('mongoose'),
+	logger = require('./logger.js'),
 	Music = require('./schema.js');
 
 mongoose.connect('mongodb://localhost/soundman');
 
 var db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 router.post('/api/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
+	logger.log('info', 'API accessed');
 	
 	var post = req.body,
 		basic = ['title', 'url', 'author', 'album', 'cover'],
@@ -29,29 +27,15 @@ router.post('/api/', (req, res) => {
 		}
 	});
 
-	if (has === false) { res.end(JSON.stringify({error: 'must have at leats url parameter'})); }
+	if (has === false) { logger.log('error', 'Invalid data on accessing API'); res.end(JSON.stringify({error: 'must have at leats url parameter'})); }
 
 	var m = new Music(post);
 
 	m.save(err => {
-		if (err) { console.log('Error adding: ' + post.url, err); }
-		console.log('New music inserted');
+		if (err) { logger.log('error', 'Error on writing music to db', [err, post.url]); }
+		logger.log('info', 'Music inserted');
 		res.end(JSON.stringify({status: 'created, will be downloaded soon'}));
 	});
-});
-
-// search
-// router.get('/api/search/', (req, res) => {
-// 	Music.find({})
-// 	 .then(found => {
-// 	 	res.end(JSON.stringify(found));
-// 	 })
-// 	 .catch(err => console.log(err));
-// });
-
-router.get('/', (req, res) => {
-	t();
-	res.end();
 });
 
 module.exports = router;

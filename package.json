@@ -16,6 +16,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "mongoose": "^4.11.9",
     "q": "^1.5.0",
+    "winston": "^2.3.1",
     "ytdl-core": "^0.14.4"
   },
   "devDependencies": {
