@@ -38,11 +38,12 @@ function check() {
 			for (var i = 0; i < (pending.length - downloading); i++) {
 				all.push(download(pending[i]));
 			}
-			return;
-		})
+			console.log(all.length);
+			// return;
+		})/*
 		.then(() => {
 			Promise.all(all);
-		})
+		})*/
 		.catch(err => console.log(err));
 }
 
