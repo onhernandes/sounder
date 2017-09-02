@@ -2,6 +2,15 @@
 
 Download YouTube videos as MP3, setting metadata like artist, album, cover and more!
 
+Use:
+- NodeJS
+- Express + Mongoose
+- ytdl-core
+- fluent-ffmpeg
+- ffmetadata
+
+Data is sent to MongoDB then is stored as pending downloads. The api itself check for pending downloads and starts new ones if needed each 5 minutes. Simple.
+
 -----------
 
 ## How to Use
