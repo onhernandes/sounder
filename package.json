@@ -11,7 +11,9 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "ffmetadata": "^1.4.0",
     "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "mongoose": "^4.11.9",
     "q": "^1.5.0",
     "ytdl-core": "^0.14.4"
