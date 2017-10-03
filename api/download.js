@@ -8,17 +8,20 @@ var mongoose = require('mongoose'),
 	logger = require('./logger.js'),
 	Music = require('./schema.js');
 
+// Use Q.Promise on Mongoose
 mongoose.Promise = Q.Promise;
-// get downloading
+
+// get downloading musics
 function getDownloading() {
 	return Music.find({status: 'downloading'}).exec();
 }
 
-// get pending
+// get pending musics
 function getPending() {
 	return Music.find({status: 'pending'}).limit(5).exec();
 }
 
+// get music title from obj or YT
 function getTitle(obj) {
 	return new Promise((resolve, reject) => {
 		if (obj.title.length !== 0) { resolve(obj.title); }
@@ -33,12 +36,13 @@ function getTitle(obj) {
 	});
 }
 
-function download_mp3(pathh, url, id) {
+// download and convert a music from YT to path
+function download_mp3(path, url, id) {
 	return new Promise((resolve, reject) => {
 		ffmpeg(ytdl(url, {quality: 'lowest'}))
 			.noVideo()
 			.audioCodec('libmp3lame')
-			.save(pathh)
+			.save(path)
 			.on('error', (err, stdout, stderr) => {
 				// get status back to 'pending'
 				logger.log('error', 'Error on downloading', [err, url]);
@@ -60,7 +64,7 @@ function download_mp3(pathh, url, id) {
 	});
 }
 
-// download
+// get title, download and write metadata
 function download(obj) {
 	var where = path.resolve(__dirname, '../music/'), file = '';
 	return new Promise((resolve, reject) => {
@@ -71,10 +75,7 @@ function download(obj) {
 				file = path.resolve(__dirname, '../music/'+title+'.mp3');
 				return download_mp3(file, obj.url, obj._id);
 			})
-			.then(a => {
-				return true;
-			})
-			.then(asd => {
+			.then(n => {
 				logger.log('info', 'Writing metadata', obj.url);
 				var data = {}, opt = {}, up = false;
 
@@ -85,8 +86,9 @@ function download(obj) {
 
 				if (up) {
 					meta.write(file, data, opt, err => {
-						// if (err) console.log(err);
-						logger.log('error', 'Error on writing metadata', [err, obj.url]);
+						if (err) {
+							logger.log('error', 'Error on writing metadata', [err, obj.url]);
+						}
 						resolve();
 					});
 				} else {
@@ -100,7 +102,7 @@ function download(obj) {
 	});
 }
 
-// wrapper
+// wrapper, check db and start downloads
 function check() {
 	var all = [], downloading = 0;
 	logger.log('info', 'Start checking');

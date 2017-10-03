@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 
 app.use('/', routes);
 
+// Check queue and download every 5 min
 setInterval(function() {
 	download();
 }, 50000);
