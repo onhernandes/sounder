@@ -30,7 +30,7 @@ router.post('/api/', (req, res) => {
 		}
 	});
 
-	if (has === false) { logger.log('error', 'Invalid data when accessing API'); res.end(JSON.stringify({error: 'invalid parameters'})); }
+	if (has === false || post.url.indexOf('youtu') == -1) { logger.log('error', 'Invalid data when accessing API'); res.end(JSON.stringify({error: 'invalid parameters'})); }
 
 	let m = new Music(post);
 
@@ -45,6 +45,21 @@ router.get('/api/search/title/:title*?/:page*?', (req, res) => {
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
 	Music.find({ title: { $regex: regex } }).skip(skip).limit(50)
+		.then((data, err) => {
+			if (err) {
+				res.end(JSON.stringify({error: 'error'}));
+			} else {
+				res.end(JSON.stringify(data.map(i => {
+					delete i[_id];
+					return i;
+				})));
+			}
+		});
+});
+
+router.delete('/api/delete/:title*?', (req, res) => {
+	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
+	Music.findOneAndRemove({ title: { $regex: regex } })
 		.then((data, err) => {
 			if (err) {
 				res.end(JSON.stringify({error: 'error'}));
