@@ -13,7 +13,7 @@ musicSchema = new Schema({
 	// google_drive: Boolean
 });
 
-musicSchema.post('save', (err, doc, next) => {
+musicSchema.post('save', (doc) => {
 	let u = doc.url;
 	if (u.indexOf('watch?v=') !== -1) {
 		u = u.split('watch?v=');
@@ -24,11 +24,8 @@ musicSchema.post('save', (err, doc, next) => {
 	}
 
 	doc.video_id = u;
-	doc.save()
-		.then((a,b) => {
-			next();
-		})
-		.catch(e => next());
+	doc.save(function(a,b) {
+	});
 });
 
 /*
