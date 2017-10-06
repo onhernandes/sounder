@@ -53,7 +53,6 @@ function download_mp3(path, url, id) {
 				logger.log('info', 'Start downloading', url);
 				// update status to 'downloading'
 				Music.findByIdAndUpdate(id, {status: 'downloading'}, () => { return; });
-				resolve();
 			})
 			.on('end', (stdout, stderr) => {
 				// update status to 'downloaded'
@@ -88,6 +87,7 @@ function download(obj) {
 					meta.write(file, data, opt, err => {
 						if (err) {
 							logger.log('error', 'Error on writing metadata', [err, obj.url]);
+							Music.findByIdAndUpdate(obj._id, {status: 'pending'}, () => { return; });
 						}
 						resolve();
 					});
@@ -96,6 +96,7 @@ function download(obj) {
 				}
 			})
 			.catch(e => {
+				Music.findByIdAndUpdate(obj._id, {status: 'pending'}, () => { return; });
 				logger.log('error', 'Error on downloading', [err, obj.url]);
 				resolve();
 			});
