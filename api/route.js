@@ -42,7 +42,6 @@ router.post('/api/', (req, res) => {
 });
 
 router.get('/api/search/title/:title*?/:page*?', (req, res) => {
-	console.log(req.params.title);
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
 	Music.find({ title: { $regex: regex } }).skip(skip).limit(50)
@@ -59,7 +58,6 @@ router.get('/api/search/title/:title*?/:page*?', (req, res) => {
 });
 
 router.get('/api/search/url/:url*?/:page*?', (req, res) => {
-	console.log(req.params.url);
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.url ? '.*' + req.params.url + '.*' : '';
 	Music.find({ url: { $regex: regex } }).skip(skip).limit(50)
@@ -73,6 +71,26 @@ router.get('/api/search/url/:url*?/:page*?', (req, res) => {
 				})));
 			}
 		});
+});
+
+router.put('/api/:video_id', (req, res) => {
+	Music.findOne({ video_id: req.params.video_id })
+		.then((data, err) => {
+			if (err) {
+				throw new Error();
+			} else {
+				return data;
+			}
+		})
+		.then(obj => {
+			if (req.body.title !== undefined) { obj.title = req.body.title; }
+			if (req.body.cover !== undefined) { obj.cover = req.body.cover; }
+			if (req.body.album !== undefined) { obj.album = req.body.album; }
+			if (req.body.author !== undefined) { obj.author = req.body.author; }
+			return obj.save();
+		})
+		.then(result => res.end(JSON.stringify(result)))
+		.catch(e => res.end(JSON.stringify({error: 'not found'})));
 });
 
 module.exports = router;

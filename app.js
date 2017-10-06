@@ -14,8 +14,8 @@ app.use('/', routes);
 
 // Check queue and download every 5 min
 setInterval(function() {
+	download();
 }, 50000);
-download();
 
 app.listen(3000, () => {
 	console.log('Started');
