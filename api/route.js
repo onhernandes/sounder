@@ -42,9 +42,27 @@ router.post('/api/', (req, res) => {
 });
 
 router.get('/api/search/title/:title*?/:page*?', (req, res) => {
+	console.log(req.params.title);
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
 	Music.find({ title: { $regex: regex } }).skip(skip).limit(50)
+		.then((data, err) => {
+			if (err) {
+				res.end(JSON.stringify({error: 'error'}));
+			} else {
+				res.end(JSON.stringify(data.map(i => {
+					delete i[_id];
+					return i;
+				})));
+			}
+		});
+});
+
+router.get('/api/search/url/:url*?/:page*?', (req, res) => {
+	console.log(req.params.url);
+	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
+	let regex = req.params.url ? '.*' + req.params.url + '.*' : '';
+	Music.find({ url: { $regex: regex } }).skip(skip).limit(50)
 		.then((data, err) => {
 			if (err) {
 				res.end(JSON.stringify({error: 'error'}));
