@@ -45,9 +45,9 @@ function download_mp3(path, url, id) {
 			.save(path)
 			.on('error', (err, stdout, stderr) => {
 				// get status back to 'pending'
-				logger.log('error', 'Error on downloading', [err, url]);
+				logger.log('error', 'Error on downloading', [err, stdout, stderr, url]);
 				Music.findByIdAndUpdate(id, {status: 'pending'}, () => { return; });
-				resolve();
+				resolve(false);
 			})
 			.on('start', cli => {
 				logger.log('info', 'Start downloading', url);
@@ -58,7 +58,7 @@ function download_mp3(path, url, id) {
 				// update status to 'downloaded'
 				logger.log('info', 'End download', url);
 				Music.findByIdAndUpdate(id, {status: 'downloaded'}, () => { return; });
-				resolve();
+				resolve(true);
 			});
 	});
 }
@@ -75,6 +75,7 @@ function download(obj) {
 				return download_mp3(file, obj.url, obj._id);
 			})
 			.then(n => {
+				if (n === false) { resolve(); }
 				logger.log('info', 'Writing metadata', obj.url);
 				var data = {}, opt = {}, up = false;
 
@@ -105,7 +106,7 @@ function download(obj) {
 
 // wrapper, check db and start downloads
 function check() {
-	var all = [], downloading = 0;
+	var downloading = 0;
 	logger.log('info', 'Start checking');
 	getDownloading()
 		.then(res => {
@@ -119,13 +120,15 @@ function check() {
 		.then(pending => {
 			if (!pending || pending.length === 0) { return false; }
 			logger.log('info', 'Got some pending music', pending.length);
+			let all = [];
 			for (var i = 0; i < (pending.length - downloading); i++) {
-				all.push(download(pending[i]));
+				all.push(pending[i]);
 			}
-			return;
+			return all;
 		})
-		.then(() => {
-			Promise.all(all);
+		.then(list => list.map(download))
+		.then(run => {
+			Promise.all(run);
 			logger.log('info', 'Done checking');
 		})
 		.catch(err => logger.log('error', 'Error on checking', err));
