@@ -9,7 +9,7 @@ Use:
 - fluent-ffmpeg
 - ffmetadata
 
-Data is sent to MongoDB then is stored as pending downloads. The api itself check for pending downloads and starts new ones if needed each 5 minutes. Simple.
+Data is sent to MongoDB then is stored as pending downloads. The api itself checks for pending downloads and starts new ones if needed each 5 minutes. Simple.
 
 -----------
 
@@ -23,7 +23,7 @@ Data is sent to MongoDB then is stored as pending downloads. The api itself chec
 	cover: 'COVER-URL', // defaults to ''
 	author: 'AUTHOR NAME', // defaults to ''
 	album: 'ALBUM NAME', // defaults to ''
-	title: 'MUSIC TITLE' // defaults to YT provided title or MongoDB _id
+	title: 'MUSIC TITLE' // defaults to provided title or YT title
 }
 ```
 
@@ -41,7 +41,7 @@ In case of providing wrong fields
 
 ```js
 {
-	error: 'must have at leats url parameter'
+	error: 'must have at least url parameter'
 }
 ```
 
