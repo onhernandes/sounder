@@ -73,17 +73,17 @@ router.get('/api/search/url/:url*?/:page*?', (req, res) => {
 		});
 });
 
-router.delete('/api/delete/:title*?', (req, res) => {
-	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
-	Music.findOneAndRemove({ title: { $regex: regex } })
+router.delete('/api/delete/:video_id*?', (req, res) => {
+	Music.findOneAndRemove({ video_id: { $eq: req.params.video_id } })
 		.then((data, err) => {
 			if (err) {
 				res.end(JSON.stringify({error: 'error'}));
 			} else {
-				res.end(JSON.stringify(data.map(i => {
-					delete i[_id];
-					return i;
-				})));
+				res.end(JSON.stringify({
+					status: 'deleted',
+					title: data.title,
+					url: data.url
+				}));
 			}
 		});
 });
