@@ -24,8 +24,7 @@ musicSchema.post('save', (doc) => {
 	}
 
 	doc.video_id = u;
-	doc.save(function(a,b) {
-	});
+	doc.save((a,b) => {});
 });
 
 /*

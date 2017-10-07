@@ -11,7 +11,7 @@ let db = mongoose.connection;
 /*
 * POST: add a music to db
 */
-router.post('/api/', (req, res) => {
+router.post('/api/music/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
 	logger.log('info', 'API accessed');
 	
