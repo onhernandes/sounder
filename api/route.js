@@ -41,7 +41,16 @@ router.post('/api/music/', (req, res) => {
 	});
 });
 
-router.get('/api/search/title/:title*?/:page*?', (req, res) => {
+router.get('/api/music/search/', (req, res) => {
+	let args = ['page', 'title', 'url', 'id', 'album', 'author'], query = {};
+	Object.keys(req.query).forEach(key => {
+		if (args.indexOf(key) !== -1) {
+			// add to query
+		}
+	});
+});
+
+router.get('/api/music/search/title/:title*?/:page*?', (req, res) => {
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
 	Music.find({ title: { $regex: regex } }).skip(skip).limit(50)
@@ -57,7 +66,7 @@ router.get('/api/search/title/:title*?/:page*?', (req, res) => {
 		});
 });
 
-router.get('/api/search/url/:url*?/:page*?', (req, res) => {
+router.get('/api/music/search/url/:url*?/:page*?', (req, res) => {
 	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
 	let regex = req.params.url ? '.*' + req.params.url + '.*' : '';
 	Music.find({ url: { $regex: regex } }).skip(skip).limit(50)
