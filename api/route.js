@@ -42,12 +42,15 @@ router.post('/api/music/', (req, res) => {
 });
 
 router.get('/api/music/search/', (req, res) => {
-	let args = ['page', 'title', 'url', 'id', 'album', 'author'], query = {};
+	let args = ['page', 'title', 'url', 'video_id', 'album', 'author'], query = {};
 	Object.keys(req.query).forEach(key => {
 		if (args.indexOf(key) !== -1) {
-			// add to query
+			Object.defineProperty(query, key, {
+				value: new RegExp(req.query[key], 'i')
+			});
 		}
 	});
+	res.send(JSON.stringify(query));
 });
 
 router.get('/api/music/search/title/:title*?/:page*?', (req, res) => {
