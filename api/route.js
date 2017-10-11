@@ -41,51 +41,73 @@ router.post('/api/music/', (req, res) => {
 	});
 });
 
+router.get('/api/music/:video_id', (req, res) => {
+	Music.findOne({ video_id: req.params.video_id })
+		.then((data, err) => {
+			if (err) {
+				throw new Error();
+			} else {
+				return data;
+			}
+		})
+		.then(obj => {
+			res.end(JSON.stringify({
+				title: obj.title,
+				video_id: obj.video_id,
+				url: obj.url,
+				album: obj.album,
+				author: obj.author,
+				cover: obj.cover,
+				status: obj.status,
+			}));
+		})
+		.catch(e => res.end(JSON.stringify({error: 'not found'})));
+});
+
 router.get('/api/music/search/', (req, res) => {
-	let args = ['page', 'title', 'url', 'video_id', 'album', 'author'], query = {};
-	Object.keys(req.query).forEach(key => {
-		if (args.indexOf(key) !== -1) {
-			Object.defineProperty(query, key, {
-				value: new RegExp(req.query[key], 'i')
-			});
-		}
-	});
-	res.send(JSON.stringify(query));
+	let args = ['title', 'url', 'video_id', 'album', 'author'], query = {},
+	video_id = typeof(req.query.video_id) === undefined || typeof(req.query.video_id) === "undefined";
+
+	if (typeof(req.query.title) !== "undefined" && video_id) {
+		query.title = new RegExp(req.query.title, 'i');
+	}
+
+	if (typeof(req.query.url) !== "undefined" && video_id) {
+		query.url = new RegExp(req.query.url, 'i');
+	}
+
+	if (typeof(req.query.album) !== "undefined" && video_id) {
+		query.album = new RegExp(req.query.album, 'i');
+	}
+
+	if (typeof(req.query.author) !== "undefined" && video_id) {
+		query.author = new RegExp(req.query.author, 'i');
+	}
+
+	if (!video_id) {
+		query.video_id = req.query.video_id;
+	}
+
+	let skip = typeof(req.query.page) !== "undefined" && parseInt(req.query.page) > 1 ? parseInt(req.query.page) * 15 : 0; 
+
+	Music.find(query).skip(skip)
+		.then((list, err) => {
+			res.end(JSON.stringify(list.map(it => {
+				return {
+					title: it.title,
+					video_id: it.video_id,
+					url: it.url,
+					album: it.album,
+					author: it.author,
+					cover: it.cover,
+					status: it.status,
+				};
+			})));
+		})
+		.catch(e => console.log(e));
 });
 
-router.get('/api/music/search/title/:title*?/:page*?', (req, res) => {
-	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
-	let regex = req.params.title ? '.*' + req.params.title + '.*' : '';
-	Music.find({ title: { $regex: regex } }).skip(skip).limit(50)
-		.then((data, err) => {
-			if (err) {
-				res.end(JSON.stringify({error: 'error'}));
-			} else {
-				res.end(JSON.stringify(data.map(i => {
-					delete i[_id];
-					return i;
-				})));
-			}
-		});
-});
-
-router.get('/api/music/search/url/:url*?/:page*?', (req, res) => {
-	let skip = parseInt(req.params.page) == 1 ? 0 : parseInt(req.params.page) * 50;
-	let regex = req.params.url ? '.*' + req.params.url + '.*' : '';
-	Music.find({ url: { $regex: regex } }).skip(skip).limit(50)
-		.then((data, err) => {
-			if (err) {
-				res.end(JSON.stringify({error: 'error'}));
-			} else {
-				res.end(JSON.stringify(data.map(i => {
-					delete i[_id];
-					return i;
-				})));
-			}
-		});
-});
-
-router.delete('/api/delete/:video_id*?', (req, res) => {
+router.delete('/api/delete/:video_id', (req, res) => {
 	Music.findOneAndRemove({ video_id: { $eq: req.params.video_id } })
 		.then((data, err) => {
 			if (err) {
