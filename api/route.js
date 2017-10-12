@@ -152,6 +152,9 @@ router.delete('/api/delete/:video_id', (req, res) => {
 		.catch(e => res.end(JSON.stringify({error: 'could not find this music'})));
 });
 
+/*
+* PUT: updates a music title, cover, album and author
+*/
 router.put('/api/:video_id', (req, res) => {
 	Music.findOne({ video_id: req.params.video_id })
 		.then((data, err) => {
