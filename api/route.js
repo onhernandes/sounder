@@ -1,6 +1,8 @@
 var express = require('express'),
 	router = express.Router(),
 	mongoose = require('mongoose'),
+	fs = require('fs'),
+	path = require('path'),
 	logger = require('./logger.js'),
 	Music = require('./schema.js');
 
@@ -41,6 +43,9 @@ router.post('/api/music/', (req, res) => {
 	});
 });
 
+/*
+* GET: get a specific music data using video_id
+*/
 router.get('/api/music/:video_id', (req, res) => {
 	Music.findOne({ video_id: req.params.video_id })
 		.then((data, err) => {
@@ -64,7 +69,10 @@ router.get('/api/music/:video_id', (req, res) => {
 		.catch(e => res.end(JSON.stringify({error: 'not found'})));
 });
 
-router.get('/api/music/search/', (req, res) => {
+/*
+* GET: search for musics based on title, url, video_id, album and author
+*/
+router.get('/api/search/', (req, res) => {
 	let args = ['title', 'url', 'video_id', 'album', 'author'], query = {},
 	video_id = typeof(req.query.video_id) === undefined || typeof(req.query.video_id) === "undefined";
 
@@ -107,19 +115,41 @@ router.get('/api/music/search/', (req, res) => {
 		.catch(e => console.log(e));
 });
 
+/*
+* DELETE: deletes a music
+*/
 router.delete('/api/delete/:video_id', (req, res) => {
-	Music.findOneAndRemove({ video_id: { $eq: req.params.video_id } })
-		.then((data, err) => {
-			if (err) {
-				res.end(JSON.stringify({error: 'error'}));
-			} else {
-				res.end(JSON.stringify({
-					status: 'deleted',
-					title: data.title,
-					url: data.url
-				}));
+	Music.findOne({ video_id: { $eq: req.params.video_id } })
+		.then((music, err) => {
+			if (err) { res.end(JSON.stringify({error: 'could not find this music'})); } else {
+				let file = path.resolve(__dirname, '../music/' + music.file_name);
+				fs.stat(file, (err, stats) => {
+					if (err) {
+						res.end(JSON.stringify({error: 'could not find this music'}));
+					} else {
+						fs.unlink(file, (err) => {
+							if (err) {
+								res.end(JSON.stringify({error: 'could not find this music'}));
+							} else {
+								Music.findOneAndRemove({ video_id: { $eq: req.params.video_id } })
+									.then((data, err) => {
+										if (err) {
+											res.end(JSON.stringify({error: 'error'}));
+										} else {
+											res.end(JSON.stringify({
+												status: 'deleted',
+												title: data.title,
+												url: data.url
+											}));
+										}
+									});
+							}
+						});
+					}
+				});
 			}
-		});
+		})
+		.catch(e => res.end(JSON.stringify({error: 'could not find this music'})));
 });
 
 router.put('/api/:video_id', (req, res) => {

@@ -24,9 +24,15 @@ function getPending() {
 // get music title from obj or YT
 function getTitle(obj) {
 	return new Promise((resolve, reject) => {
-		if (obj.title.length !== 0) { resolve(obj.title); }
+		if (obj.title.length !== 0) {
+			Music.findByIdAndUpdate(obj._id, {file_name: obj.title + '.mp3'}, () => { return; });
+			resolve(obj.title);
+		}
 		ytdl.getInfo(obj.url)
 			.then(inf => {
+				return Music.findByIdAndUpdate(obj._id, {file_name: inf.title + '.mp3'}, () => { return; });
+			})
+			.then(nothing => {
 				resolve(inf.title);
 			})
 			.catch(err => {

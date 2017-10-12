@@ -8,6 +8,7 @@ musicSchema = new Schema({
 	author: { type: String, default: '' },
 	album: { type: String, default: '' },
 	cover: { type: String, default: '' },
+	file_name: { type: String, default: '' },
 	status: { type: String, default: 'pending' },
 	// wip: add to google drive
 	// google_drive: Boolean
