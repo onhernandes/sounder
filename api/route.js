@@ -69,27 +69,26 @@ router.get('/api/music/:video_id?', (req, res) => {
 			})
 			.catch(e => res.end(JSON.stringify({error: 'not found'})));
 		} else {
-			let args = ['title', 'url', 'video_id', 'album', 'author'], query = {},
-			video_id = typeof(req.query.video_id) === undefined || typeof(req.query.video_id) === "undefined";
+			let query = {};
 
-			if (typeof(req.query.title) !== "undefined" && video_id) {
+			if (typeof(req.query.title) !== "undefined") {
 				query.title = new RegExp(req.query.title, 'i');
 			}
 
-			if (typeof(req.query.url) !== "undefined" && video_id) {
+			if (typeof(req.query.url) !== "undefined") {
 				query.url = new RegExp(req.query.url, 'i');
 			}
 
-			if (typeof(req.query.album) !== "undefined" && video_id) {
+			if (typeof(req.query.album) !== "undefined") {
 				query.album = new RegExp(req.query.album, 'i');
 			}
 
-			if (typeof(req.query.author) !== "undefined" && video_id) {
+			if (typeof(req.query.author) !== "undefined") {
 				query.author = new RegExp(req.query.author, 'i');
 			}
 
-			if (!video_id) {
-				query.video_id = req.query.video_id;
+			if (typeof(req.query.video_id) !== "undefined") {
+				query.video_id = new RegExp(req.query.video_id, 'i');
 			}
 
 			let skip = typeof(req.query.page) !== "undefined" && parseInt(req.query.page) > 1 ? parseInt(req.query.page) * 15 : 0; 
