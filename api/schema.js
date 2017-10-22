@@ -9,6 +9,7 @@ musicSchema = new Schema({
 	album: { type: String, default: '' },
 	cover: { type: String, default: '' },
 	file_name: { type: String, default: '' },
+	tries: { type: Number, default: 0 },
 	status: { type: String, default: 'pending' },
 	// wip: add to google drive
 	// google_drive: Boolean
@@ -26,7 +27,13 @@ musicSchema.post('save', (doc) => {
 
 	doc.file_name = doc._id + '.mp3';
 	doc.video_id = u;
-	doc.save(() => {});
+	doc.save(() => { return; });
+});
+
+musicSchema.post('update', (doc) => {
+	if (doc.tries >= 5) { doc.status = 'error'; }
+
+	doc.save(() => { return; });
 });
 
 /*
