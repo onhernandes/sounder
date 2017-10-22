@@ -6,3 +6,15 @@ var fs = require('fs'),
 function deleteMusic(music) {
 	return new Promise((resolve, reject) => {});
 }
+
+function downloadMusic(argument) {
+	return new Promise((resolve, reject) => {});
+}
+
+function convertMusic(argument) {
+	return new Promise((resolve, reject) => {});
+}
+
+function getMusicDataFromYT() {
+	return new Promise((resolve, reject) => {});
+}

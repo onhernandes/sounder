@@ -49,7 +49,7 @@ function download_mp3(path, url, id) {
 				// get status back to 'pending'
 				logger.log('error', 'Error on downloading', [err, stdout, stderr, url]);
 				Music.findByIdAndUpdate(id, {status: 'pending'}, () => { return; });
-				resolve(false);
+				reject(new Error('Could not download music'));
 			})
 			.on('start', cli => {
 				logger.log('info', 'Start downloading', url);

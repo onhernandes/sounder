@@ -11,11 +11,18 @@ mongoose.connect('mongodb://localhost/soundman');
 let db = mongoose.connection;
 
 /*
+* logging middleware
+*/
+router.use((req, res, next) => {
+	logger.log('info', 'API accessed');
+	next();
+});
+
+/*
 * POST: add a music to db
 */
 router.post('/api/music/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
-	logger.log('info', 'API accessed');
 	
 	var post = req.body,
 		basic = ['title', 'url', 'author', 'album', 'cover'],
@@ -32,7 +39,10 @@ router.post('/api/music/', (req, res) => {
 		}
 	});
 
-	if (has === false || post.url.indexOf('youtu') == -1) { logger.log('error', 'Invalid data when accessing API'); res.end(JSON.stringify({error: 'invalid parameters'})); }
+	if (has === false || post.url.indexOf('youtu') == -1) { 
+		logger.log('error', 'Invalid data when accessing API'); 
+		res.end(JSON.stringify({error: 'invalid parameters'})); 
+	}
 
 	let m = new Music(post);
 
