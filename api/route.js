@@ -165,6 +165,7 @@ router.put('/api/music/:video_id', (req, res) => {
 			if (req.body.cover !== undefined) { obj.cover = req.body.cover; }
 			if (req.body.album !== undefined) { obj.album = req.body.album; }
 			if (req.body.author !== undefined) { obj.author = req.body.author; }
+			if (req.body.update !== false) { obj.status = 'pending'; }
 			return obj.save();
 		})
 		.then(result => res.end(JSON.stringify(result)))

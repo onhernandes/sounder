@@ -1,4 +1,4 @@
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	Q = require('q'),
 	ffmpeg = require('fluent-ffmpeg'),
 	meta = require('ffmetadata'),
@@ -25,15 +25,11 @@ function getPending() {
 function getTitle(obj) {
 	return new Promise((resolve, reject) => {
 		if (obj.title.length !== 0) {
-			Music.findByIdAndUpdate(obj._id, {file_name: obj.title + '.mp3'}, () => { return; });
 			resolve(obj.title);
 		}
 		ytdl.getInfo(obj.url)
-			.then(inf => {
-				return Music.findByIdAndUpdate(obj._id, {file_name: inf.title + '.mp3'}, () => { return; });
-			})
-			.then(nothing => {
-				resolve(inf.title);
+			.then(info => {
+				resolve(info.title);
 			})
 			.catch(err => {
 				logger.log('error', 'Error on getting music title', [err, obj.url]);
@@ -71,19 +67,19 @@ function download_mp3(path, url, id) {
 
 // get title, download and write metadata
 function download(obj) {
-	var where = path.resolve(__dirname, '../music/'), file = '';
+	let where = path.resolve(__dirname, '../music/'), file = '';
 	return new Promise((resolve, reject) => {
 		logger.log('info', 'Start downloading', obj.url);
 		getTitle(obj)
 			.then(title => {
 				logger.log('info', 'Got title', obj.url);
-				file = path.resolve(__dirname, '../music/'+title+'.mp3');
+				file = path.resolve(__dirname, '../music/' + obj.file_name);
 				return download_mp3(file, obj.url, obj._id);
 			})
 			.then(n => {
 				if (n === false) { resolve(); }
 				logger.log('info', 'Writing metadata', obj.url);
-				var data = {}, opt = {}, up = false;
+				let data = {}, opt = {}, up = false;
 
 				if (obj.title.length !== 0) { up = true; data.title = obj.title; data.label = obj.title; }
 				if (obj.album.length !== 0) { up = true; data.album = obj.album; }
@@ -112,7 +108,7 @@ function download(obj) {
 
 // wrapper, check db and start downloads
 function check() {
-	var downloading = 0;
+	let downloading = 0;
 	logger.log('info', 'Start checking');
 	getDownloading()
 		.then(res => {
@@ -127,7 +123,7 @@ function check() {
 			if (!pending || pending.length === 0) { return false; }
 			logger.log('info', 'Got some pending music', pending.length);
 			let all = [];
-			for (var i = 0; i < (pending.length - downloading); i++) {
+			for (let i = 0; i < (pending.length - downloading); i++) {
 				all.push(pending[i]);
 			}
 			return all;

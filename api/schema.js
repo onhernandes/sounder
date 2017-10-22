@@ -24,8 +24,9 @@ musicSchema.post('save', (doc) => {
 		u = u[1];
 	}
 
+	doc.file_name = doc._id + '.mp3';
 	doc.video_id = u;
-	doc.save((a,b) => {});
+	doc.save(() => {});
 });
 
 /*
