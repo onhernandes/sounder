@@ -98,10 +98,27 @@ function writeMusicData(music) {
 					Music.findByIdAndUpdate(obj._id, { status: 'downloaded' }, () => { return; });
 				}
 
-				resolve();
+				resolve(true);
 			});
 		} else {
-			resolve();
+			resolve(true);
 		}
 	});
 }
+
+function getDownloading() {
+	return Music.find({status: 'downloading'}).exec();
+}
+
+function getPending() {
+	return Music.find({status: 'pending'}).limit(5).exec();
+}
+
+module.exports = {
+	writeMusicData,
+	downloadMusic,
+	convertMusic,
+	getMusicDataFromYT,
+	getDownloading,
+	getPending
+};

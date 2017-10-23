@@ -1,9 +1,13 @@
 let mongoose = require('mongoose'),
 	Q = require('q'),
-	ffmpeg = require('fluent-ffmpeg'),
-	meta = require('ffmetadata'),
-	ytdl = require('ytdl-core'),
-	fs = require('fs'),
+	{
+		writeMusicData,
+		downloadMusic,
+		convertMusic,
+		getMusicDataFromYT,
+		getDownloading,
+		getPending
+	} = require('./utils.js'),
 	path = require('path'),
 	logger = require('./logger.js'),
 	Music = require('./schema.js');
@@ -11,98 +15,9 @@ let mongoose = require('mongoose'),
 // Use Q.Promise on Mongoose
 mongoose.Promise = Q.Promise;
 
-// get downloading musics
-function getDownloading() {
-	return Music.find({status: 'downloading'}).exec();
-}
-
-// get pending musics
-function getPending() {
-	return Music.find({status: 'pending'}).limit(5).exec();
-}
-
-// get music title from obj or YT
-function getTitle(obj) {
-	return new Promise((resolve, reject) => {
-		if (obj.title.length !== 0) {
-			resolve(obj.title);
-		}
-		ytdl.getInfo(obj.url)
-			.then(info => {
-				resolve(info.title);
-			})
-			.catch(err => {
-				logger.log('error', 'Error on getting music title', [err, obj.url]);
-				resolve(obj._id);
-			});
-	});
-}
-
-// download and convert a music from YT to path
-function download_mp3(path, url, id) {
-	return new Promise((resolve, reject) => {
-		ffmpeg(ytdl(url, {quality: 'lowest'}))
-			.noVideo()
-			.audioCodec('libmp3lame')
-			.save(path)
-			.on('error', (err, stdout, stderr) => {
-				// get status back to 'pending'
-				logger.log('error', 'Error on downloading', [err, stdout, stderr, url]);
-				Music.findByIdAndUpdate(id, {status: 'pending'}, () => { return; });
-				reject(new Error('Could not download music'));
-			})
-			.on('start', cli => {
-				logger.log('info', 'Start downloading', url);
-				// update status to 'downloading'
-				Music.findByIdAndUpdate(id, {status: 'downloading'}, () => { return; });
-			})
-			.on('end', (stdout, stderr) => {
-				// update status to 'downloaded'
-				logger.log('info', 'End download', url);
-				Music.findByIdAndUpdate(id, {status: 'downloaded'}, () => { return; });
-				resolve(true);
-			});
-	});
-}
-
 // get title, download and write metadata
-function download(obj) {
-	let where = path.resolve(__dirname, '../music/'), file = '';
+function download(music) {
 	return new Promise((resolve, reject) => {
-		logger.log('info', 'Start downloading', obj.url);
-		getTitle(obj)
-			.then(title => {
-				logger.log('info', 'Got title', obj.url);
-				file = path.resolve(__dirname, '../music/' + obj.file_name);
-				return download_mp3(file, obj.url, obj._id);
-			})
-			.then(n => {
-				if (n === false) { resolve(); }
-				logger.log('info', 'Writing metadata', obj.url);
-				let data = {}, opt = {}, up = false;
-
-				if (obj.title.length !== 0) { up = true; data.title = obj.title; data.label = obj.title; }
-				if (obj.album.length !== 0) { up = true; data.album = obj.album; }
-				if (obj.author.length !== 0) { up = true; data.artist = obj.author; }
-				if (obj.cover.length !== 0) { up = true; opt.attachments = [obj.cover]; }
-
-				if (up) {
-					meta.write(file, data, opt, err => {
-						if (err) {
-							logger.log('error', 'Error on writing metadata', [err, obj.url]);
-							Music.findByIdAndUpdate(obj._id, {status: 'pending'}, () => { return; });
-						}
-						resolve();
-					});
-				} else {
-					resolve();
-				}
-			})
-			.catch(e => {
-				Music.findByIdAndUpdate(obj._id, {status: 'pending'}, () => { return; });
-				logger.log('error', 'Error on downloading', [err, obj.url]);
-				resolve();
-			});
 	});
 }
 
