@@ -18,6 +18,19 @@ mongoose.Promise = Q.Promise;
 // get title, download and write metadata
 function download(music) {
 	return new Promise((resolve, reject) => {
+		if (music.url.length == 0) { return false; }
+
+		let stream = downloadMusic(music.url);
+		convertMusic(stream)
+			.then(done => {
+				return writeMusicData(music);
+			})
+			.then(status => {
+				resolve(status);
+			})
+			.catch(e => {
+				reject(e);
+			});
 	});
 }
 
@@ -45,7 +58,8 @@ function check() {
 		})
 		.then(list => list.map(download))
 		.then(run => {
-			Promise.all(run);
+			logger.log('info', 'Status: ');
+			logger.log('info', Promise.all(run));
 			logger.log('info', 'Done checking');
 		})
 		.catch(err => logger.log('error', 'Error on checking', err));
