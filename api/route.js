@@ -78,47 +78,47 @@ router.get('/api/music/:video_id?', (req, res) => {
 				}));
 			})
 			.catch(e => res.end(JSON.stringify({error: 'not found'})));
-		} else {
-			let query = {};
+	} else {
+		let query = {};
 
-			if (typeof(req.query.title) !== "undefined") {
-				query.title = new RegExp(req.query.title, 'i');
-			}
-
-			if (typeof(req.query.url) !== "undefined") {
-				query.url = new RegExp(req.query.url, 'i');
-			}
-
-			if (typeof(req.query.album) !== "undefined") {
-				query.album = new RegExp(req.query.album, 'i');
-			}
-
-			if (typeof(req.query.author) !== "undefined") {
-				query.author = new RegExp(req.query.author, 'i');
-			}
-
-			if (typeof(req.query.video_id) !== "undefined") {
-				query.video_id = new RegExp(req.query.video_id, 'i');
-			}
-
-			let skip = typeof(req.query.page) !== "undefined" && parseInt(req.query.page) > 1 ? parseInt(req.query.page) * 15 : 0; 
-
-			Music.find(query).skip(skip)
-				.then((list, err) => {
-					res.end(JSON.stringify(list.map(it => {
-						return {
-							title: it.title,
-							video_id: it.video_id,
-							url: it.url,
-							album: it.album,
-							author: it.author,
-							cover: it.cover,
-							status: it.status,
-						};
-					})));
-				})
-				.catch(e => console.log(e));
+		if (typeof(req.query.title) !== "undefined") {
+			query.title = new RegExp(req.query.title, 'i');
 		}
+
+		if (typeof(req.query.url) !== "undefined") {
+			query.url = new RegExp(req.query.url, 'i');
+		}
+
+		if (typeof(req.query.album) !== "undefined") {
+			query.album = new RegExp(req.query.album, 'i');
+		}
+
+		if (typeof(req.query.author) !== "undefined") {
+			query.author = new RegExp(req.query.author, 'i');
+		}
+
+		if (typeof(req.query.video_id) !== "undefined") {
+			query.video_id = new RegExp(req.query.video_id, 'i');
+		}
+
+		let skip = typeof(req.query.page) !== "undefined" && parseInt(req.query.page) > 1 ? parseInt(req.query.page) * 15 : 0; 
+
+		Music.find(query).skip(skip)
+			.then((list, err) => {
+				res.end(JSON.stringify(list.map(it => {
+					return {
+						title: it.title,
+						video_id: it.video_id,
+						url: it.url,
+						album: it.album,
+						author: it.author,
+						cover: it.cover,
+						status: it.status,
+					};
+				})));
+			})
+			.catch(e => console.log(e));
+	}
 });
 
 /*

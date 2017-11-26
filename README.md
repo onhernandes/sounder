@@ -15,19 +15,25 @@ Data is sent to MongoDB then is stored as pending downloads. The api itself chec
 
 ## How to Use
 
-### POST
+You could just import our [Postman's Collection](Soundman.collection.json) and try right now!
 
-```js
+### POST - Add new music
+
+The following fields defaults to what YT can give to us: `cover`, `author`, `title`
+
+Endpoint: `/api/music`
+
+```json
 {
-	url: 'MUSIC-VIDEO-URL',
-	cover: 'COVER-URL', // defaults to ''
-	author: 'AUTHOR NAME', // defaults to ''
-	album: 'ALBUM NAME', // defaults to ''
-	title: 'MUSIC TITLE' // defaults to provided title or YT title
+	"url": "MUSIC-VIDEO-URL",
+	"cover": "COVER-URL",
+	"author": "AUTHOR NAME",
+	"album": "ALBUM NAME",
+	"title": "MUSIC TITLE"
 }
 ```
 
-### RESPONSE
+#### RESPONSE
 
 ```js
 {
@@ -35,7 +41,7 @@ Data is sent to MongoDB then is stored as pending downloads. The api itself chec
 }
 ```
 
-### ERROR
+#### ERROR
 
 In case of providing wrong fields
 
@@ -43,6 +49,28 @@ In case of providing wrong fields
 {
 	error: 'must have at least url parameter'
 }
+```
+
+### GET - Search for a music
+
+Endpoint: `/api/music/:video_id`
+
+You can just pass the video_id for getting a music from his YouTube's ID. The following json is just for pretty view, but you must pass it as `?title=My+awesome+Music&author=Blackbear`
+
+```json
+{
+	"title": "My awesome title",
+	"author": "Blackbear",
+	"url": "youtu.be/random",
+	"album": "TheFlash is the best",
+	"video_id": "us2"
+}
+```
+
+#### RESPONSE
+
+```json
+{}
 ```
 
 For more, check out log folder
