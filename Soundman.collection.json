@@ -1,0 +1,102 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Soundman",
+		"_postman_id": "12fc4d6b-969c-3483-c15e-a3fd96f4bf2d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Search",
+			"request": {
+				"url": {
+					"raw": "http://localhost:3000/api/music?title=Awesome&url=7bFa&album=test&author=myself",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"music"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Awesome",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "url",
+							"value": "7bFa",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "album",
+							"value": "test",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "author",
+							"value": "myself",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Search for musics using video_id*, title*, url*, album*, author*.\n\n*similar to SQL LIKE search"
+			},
+			"response": []
+		},
+		{
+			"name": "Get specific music data",
+			"request": {
+				"url": "http://localhost:3000/api/music/7bFAKx7H4hU",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Returns music data"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a music",
+			"request": {
+				"url": "http://localhost:3000/api/music/I9O1SogQa1M",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update a music",
+			"request": {
+				"url": "http://localhost:3000/api/music/I9O1SogQa1M",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"new title\",\n  \"album\": \"new album\",\n  \"author\": \"new author\",\n  \"cover\": \"new cover url\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
