@@ -82,28 +82,50 @@ function writeMusicData(music) {
 		let data = {}, opt = {}, up = false,
 			file = path.resolve(__dirname, '../music/' + music.file_name);
 
-		if (music.title.length !== 0) { up = true; data.title = music.title; data.label = music.title; }
-		if (music.album.length !== 0) { up = true; data.album = music.album; }
-		if (music.author.length !== 0) { up = true; data.artist = music.author; }
-		if (music.cover.length !== 0) { up = true; opt.attachments = [music.cover]; }
-
-		if (up) {
-			meta.write(file, data, opt, err => {
-				if (err) {
-					logger.log('error', 'error when writing metadata', {
-						err: err, 
-						id: music._id,
-						url: music.url,
-					});
-
-					Music.findByIdAndUpdate(obj._id, { status: 'downloaded' }, () => { return; });
+		getData(music.url)
+			.then(original_metadata => {
+				if (music.title.length > 0) {
+					data.title = music.title;
+					data.label = music.title;
+				} else {
+					data.title = original_metadata.title;
+					data.label = original_metadata.title;
 				}
 
-				resolve(true);
-			});
-		} else {
-			resolve(true);
-		}
+				if (music.cover.length > 0) {
+					opt.attachments = [music.cover];
+				} else {
+					opt.attachments = [original_metadata.cover];
+				}
+
+				if (music.album.length > 0) {
+					data.album = music.album;
+				}
+
+				if (music.author.length > 0) {
+					data.artist = music.author;
+				} else {
+					data.artist = original_metadata.author;
+				}
+
+				return;
+			})
+			.then(() => {
+				meta.write(file, data, opt, err => {
+					if (err) {
+						logger.log('error', 'error when writing metadata', {
+							err: err, 
+							id: music._id,
+							url: music.url,
+						});
+
+						Music.findByIdAndUpdate(obj._id, { status: 'downloaded' }, () => { return; });
+					}
+
+					resolve(true);
+				});
+			})
+			.catch(e => resolve(true));
 	});
 }
 
@@ -115,11 +137,40 @@ function getPending() {
 	return Music.find({status: 'pending'}).limit(5).exec();
 }
 
+function getData() {
+	yt.getInfo('https://www.youtube.com/watch?v=BlYj1FcAUDs')
+		.then(data => {
+			let metadata = {};
+
+			if (data.title !== null && data.title !== undefined && data.title.length > 0) {
+				metadata.title = data.title;
+			} else {
+				metadata.title = '';
+			}
+
+			if (data.author.name !== null && data.author.name !== undefined && data.author.name.length > 0) {
+				metadata.author = data.author.name;
+			} else {
+				metadata.author = '';
+			}
+
+			if (data.iurlmaxres !== null && data.iurlmaxres !== undefined && data.iurlmaxres.length > 0) {
+				metadata.cover = data.iurlmaxres;
+			} else {
+				metadata.cover = '';
+			}
+
+			return metadata;
+		})
+		.catch(e => console.log(e));
+}
+
 module.exports = {
 	writeMusicData,
 	downloadMusic,
 	convertMusic,
 	getMusicDataFromYT,
 	getDownloading,
-	getPending
+	getPending,
+	getData
 };

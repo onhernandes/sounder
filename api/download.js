@@ -6,7 +6,8 @@ let mongoose = require('mongoose'),
 		convertMusic,
 		getMusicDataFromYT,
 		getDownloading,
-		getPending
+		getPending,
+		getData
 	} = require('./utils.js'),
 	path = require('path'),
 	logger = require('./logger.js'),
@@ -38,7 +39,7 @@ function download(music) {
 function check() {
 	let downloading = 0;
 	logger.log('info', 'Start checking');
-	getDownloading()
+	return getDownloading()
 		.then(res => {
 			if (res.length < 5) {
 				downloading = res.length;
