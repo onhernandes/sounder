@@ -1,3 +1,8 @@
+
+process.on('unhandledRejection', (reason) => {
+    console.log('Reason: ' + reason);
+});
+
 var express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),

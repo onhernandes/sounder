@@ -63,7 +63,7 @@ function convertMusic(readable, music) {
 				url: music.url,
 			});
 			// update status to 'downloading'
-			Music.findByIdAndUpdate(id, {status: 'downloading'}, () => { return; });
+			Music.findByIdAndUpdate(music._id, {status: 'downloading'}, () => { return; });
 		});
 
 		converting.on('end', () => {
@@ -71,7 +71,7 @@ function convertMusic(readable, music) {
 				id: music._id,
 				url: music.url,
 			});
-			Music.findByIdAndUpdate(id, {status: 'downloaded'}, () => { return; });
+			Music.findByIdAndUpdate(music._id, {status: 'downloaded'}, () => { return; });
 			resolve(true);
 		});
 	});
@@ -79,7 +79,8 @@ function convertMusic(readable, music) {
 
 function writeMusicData(music) {
 	return new Promise((resolve, reject) => {
-		let data = {}, opt = {}, up = false;
+		let data = {}, opt = {}, up = false,
+			file = path.resolve(__dirname, '../music/' + music.file_name);
 
 		if (music.title.length !== 0) { up = true; data.title = music.title; data.label = music.title; }
 		if (music.album.length !== 0) { up = true; data.album = music.album; }

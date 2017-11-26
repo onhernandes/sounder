@@ -21,7 +21,7 @@ function download(music) {
 		if (music.url.length == 0) { return false; }
 
 		let stream = downloadMusic(music.url);
-		convertMusic(stream)
+		convertMusic(stream, music)
 			.then(done => {
 				return writeMusicData(music);
 			})
@@ -48,7 +48,9 @@ function check() {
 			}
 		})
 		.then(pending => {
-			if (!pending || pending.length === 0) { return false; }
+			if (!pending || pending.length === 0) {
+				throw new Error('Did not find any peding musics');
+			}
 			logger.log('info', 'Got some pending music', pending.length);
 			let all = [];
 			for (let i = 0; i < (pending.length - downloading); i++) {
@@ -62,7 +64,10 @@ function check() {
 			logger.log('info', Promise.all(run));
 			logger.log('info', 'Done checking');
 		})
-		.catch(err => logger.log('error', 'Error on checking', err));
+		.catch(err => {
+			logger.log('info', 'No music found');
+			return;
+		});
 }
 
 module.exports = check;
