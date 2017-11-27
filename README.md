@@ -73,8 +73,35 @@ You can just pass the video_id for getting a music from his YouTube's ID. The fo
 {}
 ```
 
-For more, check out log folder
+### PUT - Update a music
 
+Endpoint: `/api/music/:video_id`
+
+```json
+{
+	"title": "",
+	"cover": "",
+	"album": "",
+	"author": "",
+	"update": true // if is set and it is true, the file will be downloaded again
+}
+```
+
+#### RESPONSE
+
+### DELETE - Delete a music(the file and the record)
+
+Endpoint: `/api/music/:video_id`
+
+#### RESPONSE
+
+```json
+{
+	"status": "deleted",
+	"title": "MUSIC-TITLE",
+	"url": "MUSIC-URL"
+}
+```
 
 # LICENSE
 
