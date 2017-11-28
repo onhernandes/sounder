@@ -25,11 +25,11 @@ Endpoint: `/api/music`
 
 ```json
 {
-	"url": "MUSIC-VIDEO-URL",
-	"cover": "COVER-URL",
-	"author": "AUTHOR NAME",
-	"album": "ALBUM NAME",
-	"title": "MUSIC TITLE"
+	"url": "string",
+	"cover": "string",
+	"author": "string",
+	"album": "string",
+	"title": "string"
 }
 ```
 
@@ -59,11 +59,11 @@ You can just pass the video_id for getting a music from his YouTube's ID. The fo
 
 ```json
 {
-	"title": "My awesome title",
-	"author": "Blackbear",
-	"url": "youtu.be/random",
-	"album": "TheFlash is the best",
-	"video_id": "us2"
+	"title": "string",
+	"author": "string",
+	"url": "string",
+	"album": "string",
+	"video_id": "string"
 }
 ```
 
@@ -79,11 +79,11 @@ Endpoint: `/api/music/:video_id`
 
 ```json
 {
-	"title": "",
-	"cover": "",
-	"album": "",
-	"author": "",
-	"update": true // if is set and it is true, the file will be downloaded again
+	"title": "string",
+	"cover": "string",
+	"album": "string",
+	"author": "string",
+	"update": "bool" // if is set and it is true, the file will be downloaded again
 }
 ```
 
@@ -97,9 +97,9 @@ Endpoint: `/api/music/:video_id`
 
 ```json
 {
-	"status": "deleted",
-	"title": "MUSIC-TITLE",
-	"url": "MUSIC-URL"
+	"status": "string",
+	"title": "string",
+	"url": "string"
 }
 ```
 
