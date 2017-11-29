@@ -17,11 +17,11 @@ app.use(bodyParser.json());
 
 app.use('/', routes);
 
-download();
+/*download();
 // Check queue and download every 5 min
 setInterval(function() {
-	// download();
-}, 50000);
+	download();
+}, 50000);*/
 
 app.listen(3000, () => {
 	console.log('Started');

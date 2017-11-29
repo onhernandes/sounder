@@ -14,7 +14,7 @@ let db = mongoose.connection;
 * logging middleware
 */
 router.use((req, res, next) => {
-	logger.log('info', 'API accessed');
+	logger.log('info', 'API accessed :: ' + req.method);
 	next();
 });
 
@@ -23,7 +23,7 @@ router.use((req, res, next) => {
 */
 router.post('/api/music/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
-	
+	logger.log('info', 'Before checking values');
 	var post = req.body,
 		basic = ['title', 'url', 'author', 'album', 'cover'],
 		has = false;
@@ -39,6 +39,7 @@ router.post('/api/music/', (req, res) => {
 		}
 	});
 
+	logger.log('info', 'Values checked');
 	if (has === false || post.url.indexOf('youtu') == -1) { 
 		logger.log('error', 'Invalid data when accessing API'); 
 		res.end(JSON.stringify({error: 'invalid parameters'})); 
@@ -46,10 +47,11 @@ router.post('/api/music/', (req, res) => {
 
 	let m = new Music(post);
 
+	logger.log('info', 'Object created, saving');
 	m.save(err => {
 		if (err) { logger.log('error', 'Error on writing music to db', [err, post.url]); }
 		logger.log('info', 'Music inserted');
-		res.end(JSON.stringify({status: 'created, will be downloaded soon'}));
+		res.send(JSON.stringify({status: 'created, will be downloaded soon'})).end();
 	});
 });
 
