@@ -21,6 +21,11 @@ function download(music) {
 	return new Promise((resolve, reject) => {
 		if (music.url.length == 0) { return false; }
 
+		if (music.file_name.length == 0) {
+			music.file_name = music._id + '.mp3';
+			music.save();
+		}
+
 		let stream = downloadMusic(music.url);
 		convertMusic(stream, music)
 			.then(done => {

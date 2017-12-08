@@ -1,6 +1,10 @@
-
 process.on('unhandledRejection', (reason) => {
-    console.log('Reason: ' + reason);
+    console.log('unhandledRejection');
+    console.log({
+    	code: reason.code,
+    	message: reason.message,
+    	stack: reason.stack,
+    });
 });
 
 var express = require('express'),
@@ -17,11 +21,12 @@ app.use(bodyParser.json());
 
 app.use('/', routes);
 
-/*download();
+download();
 // Check queue and download every 5 min
 setInterval(function() {
-	download();
-}, 50000);*/
+	// download();
+	// console.log('App running now!');
+}, 1000);
 
 app.listen(3000, () => {
 	console.log('Started');

@@ -77,6 +77,42 @@ function convertMusic(readable, music) {
 	});
 }
 
+function getDownloading() {
+	return Music.find({status: 'downloading'}).exec();
+}
+
+function getPending() {
+	return Music.find({status: 'pending'}).limit(5).exec();
+}
+
+function getData() {
+	yt.getInfo('https://www.youtube.com/watch?v=BlYj1FcAUDs')
+		.then(data => {
+			let metadata = {};
+
+			if (data.title !== null && data.title !== undefined && data.title.length > 0) {
+				metadata.title = data.title;
+			} else {
+				metadata.title = '';
+			}
+
+			if (data.author.name !== null && data.author.name !== undefined && data.author.name.length > 0) {
+				metadata.author = data.author.name;
+			} else {
+				metadata.author = '';
+			}
+
+			if (data.iurlmaxres !== null && data.iurlmaxres !== undefined && data.iurlmaxres.length > 0) {
+				metadata.cover = data.iurlmaxres;
+			} else {
+				metadata.cover = '';
+			}
+
+			return metadata;
+		})
+		.catch(e => console.log(e));
+}
+
 function writeMusicData(music) {
 	return new Promise((resolve, reject) => {
 		let data = {}, opt = {}, up = false,
@@ -127,42 +163,6 @@ function writeMusicData(music) {
 			})
 			.catch(e => resolve(true));
 	});
-}
-
-function getDownloading() {
-	return Music.find({status: 'downloading'}).exec();
-}
-
-function getPending() {
-	return Music.find({status: 'pending'}).limit(5).exec();
-}
-
-function getData() {
-	yt.getInfo('https://www.youtube.com/watch?v=BlYj1FcAUDs')
-		.then(data => {
-			let metadata = {};
-
-			if (data.title !== null && data.title !== undefined && data.title.length > 0) {
-				metadata.title = data.title;
-			} else {
-				metadata.title = '';
-			}
-
-			if (data.author.name !== null && data.author.name !== undefined && data.author.name.length > 0) {
-				metadata.author = data.author.name;
-			} else {
-				metadata.author = '';
-			}
-
-			if (data.iurlmaxres !== null && data.iurlmaxres !== undefined && data.iurlmaxres.length > 0) {
-				metadata.cover = data.iurlmaxres;
-			} else {
-				metadata.cover = '';
-			}
-
-			return metadata;
-		})
-		.catch(e => console.log(e));
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-var express = require('express'),
+let express = require('express'),
 	router = express.Router(),
 	mongoose = require('mongoose'),
 	fs = require('fs'),
@@ -24,7 +24,7 @@ router.use((req, res, next) => {
 router.post('/api/music/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
 	logger.log('info', 'Before checking values');
-	var post = req.body,
+	let post = req.body,
 		basic = ['title', 'url', 'author', 'album', 'cover'],
 		has = false;
 
@@ -39,18 +39,27 @@ router.post('/api/music/', (req, res) => {
 		}
 	});
 
-	logger.log('info', 'Values checked');
 	if (has === false || post.url.indexOf('youtu') == -1) { 
 		logger.log('error', 'Invalid data when accessing API'); 
 		res.end(JSON.stringify({error: 'invalid parameters'})); 
 	}
 
+	let u = post.url;
+
+	if (u.indexOf('watch?v=') !== -1) {
+		u = u.split('watch?v=');
+		u = u[1];
+	} else if (u.indexOf('youtu.be/') !== -1) {
+		u = u.split('youtu.be/');
+		u = u[1];
+	}
+
+	post.video_id = u;
 	let m = new Music(post);
 
-	logger.log('info', 'Object created, saving');
 	m.save(err => {
-		if (err) { logger.log('error', 'Error on writing music to db', [err, post.url]); }
-		logger.log('info', 'Music inserted');
+		if (err) { logger.log('error', 'Error whent trying to write music to Mongo', [err, post.url]); }
+		logger.log('info', 'Music created');
 		res.send(JSON.stringify({status: 'created, will be downloaded soon'})).end();
 	});
 });

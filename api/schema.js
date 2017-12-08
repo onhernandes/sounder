@@ -15,21 +15,6 @@ musicSchema = new Schema({
 	// google_drive: Boolean
 });
 
-musicSchema.post('save', (doc) => {
-	let u = doc.url;
-	if (u.indexOf('watch?v=') !== -1) {
-		u = u.split('watch?v=');
-		u = u[1];
-	} else if (u.indexOf('youtu.be/') !== -1) {
-		u = u.split('youtu.be/');
-		u = u[1];
-	}
-
-	doc.file_name = doc._id + '.mp3';
-	doc.video_id = u;
-	doc.save(() => { return; });
-});
-
 musicSchema.post('update', (doc) => {
 	if (doc.tries >= 5) { doc.status = 'error'; }
 

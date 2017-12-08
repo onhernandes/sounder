@@ -51,11 +51,11 @@ In case of providing wrong fields
 }
 ```
 
-### GET - Search for a music
+### GET - Search or get a specific music
 
-Endpoint: `/api/music/:video_id`
+Endpoint: `/api/music/:video_id?`
 
-You can just pass the video_id for getting a music from his YouTube's ID. The following json is just for pretty view, but you must pass it as `?title=My+awesome+Music&author=Blackbear`
+You can just pass the video_id for getting a music or you can use the following parameters for searching, the json is just for pretty view, but you must pass it as `?title=My+awesome+Music&author=Blackbear`
 
 ```json
 {
@@ -70,7 +70,26 @@ You can just pass the video_id for getting a music from his YouTube's ID. The fo
 #### RESPONSE
 
 ```json
-{}
+[
+  {
+    "title": "string",
+    "video_id": "string",
+    "url": "string",
+    "album": "string",
+    "author": "string",
+    "cover": "string",
+    "status": "string"
+  }
+]
+```
+
+
+#### Error
+
+Just returns an empty array.
+
+```json
+[]
 ```
 
 ### PUT - Update a music
@@ -88,6 +107,26 @@ Endpoint: `/api/music/:video_id`
 ```
 
 #### RESPONSE
+
+```json
+{
+	"title": "string",
+	"video_id": "string",
+	"url": "string",
+	"album": "string",
+	"author": "string",
+	"cover": "string",
+	"status": "string"
+}
+```
+
+#### ERROR
+
+```json
+{
+	"error": "not found"
+}
+```
 
 ### DELETE - Delete a music(the file and the record)
 

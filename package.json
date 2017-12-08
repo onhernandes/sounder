@@ -9,16 +9,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "express": "^4.15.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "ffmetadata": "^1.4.0",
     "fluent-ffmpeg": "^2.1.2",
-    "mongoose": "^4.11.9",
-    "q": "^1.5.0",
-    "winston": "^2.3.1",
+    "mongoose": "^4.13.5",
+    "q": "^1.5.1",
+    "winston": "^2.4.0",
     "ytdl-core": "^0.14.4"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.12.1"
   }
 }
