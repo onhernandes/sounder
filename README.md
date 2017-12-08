@@ -55,7 +55,7 @@ In case of providing wrong fields
 
 Endpoint: `/api/music/:video_id?`
 
-You can just pass the video_id for getting a music or you can use the following parameters for searching, the json is just for pretty view, but you must pass it as `?title=My+awesome+Music&author=Blackbear`
+You can just pass the `video_id` for getting a music or you can use the following parameters for searching, the json is just for pretty view, but you must pass it as `?title=My+awesome+Music&author=Blackbear`
 
 ```json
 {
@@ -102,7 +102,7 @@ Endpoint: `/api/music/:video_id`
 	"cover": "string",
 	"album": "string",
 	"author": "string",
-	"update": "bool" // if is set and it is true, the file will be downloaded again
+	"update": "bool"
 }
 ```
 
