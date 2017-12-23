@@ -4,11 +4,20 @@ let express = require('express'),
 	fs = require('fs'),
 	path = require('path'),
 	logger = require('./logger.js'),
-	Music = require('./schema.js');
+	Music = require('./schema.js'),
+	Spotify = require('spotify-web-api-node'),
+	Credentials = require('./credentials.js'),
+	credentials_file = require('./spotify.json');
 
 mongoose.connect('mongodb://localhost/soundman');
 
 let db = mongoose.connection;
+
+let spotifyApi = new Spotify({
+		clientId: credentials_file.client_id,
+		clientSecret: credentials_file.secret_id,
+		redirectUri: credentials_file.uri
+	});
 
 /*
 * logging middleware
@@ -17,6 +26,49 @@ router.use((req, res, next) => {
 	logger.log('info', 'API accessed :: ' + req.method);
 	next();
 });
+
+/*
+* GET: access index for getting a login button
+*/
+router.get('/login', (req, res) => {
+	res.render('login-spotify.html', { url: spotifyApi.createAuthorizeURL(credentials_file.scopes, credentials_file.state) });
+});
+
+/*
+* ANY: Spotify callback for login
+*/
+router.get('/auth', (req, res) => {
+	let code = req.query.code || null,
+		state = req.query.state || null;
+
+	if (!code) {
+		res.send('Code not defined'); res.end(); return;
+	}
+
+	spotifyApi.authorizationCodeGrant(code)
+		.then(function(data) {
+			let cred = new Credentials({
+				spotify_access: data.body.access_token,
+				spotify_refresh: data.body.refresh_token,
+				spotify_expires: data.body.expires_in,
+			});
+
+			cred.save(err => {
+				if (err) {
+					res.write('Error on writing to Mongo');
+					res.end(JSON.stringify(err)); return;
+				}
+
+				res.write('Credentials saved successfully! You can use the app.');
+				res.end();
+				return;
+			});
+		}, function(err) {
+			console.log('Something went wrong!', err);
+			return;
+		});
+});
+
 
 /*
 * POST: add a music to db

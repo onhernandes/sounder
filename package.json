@@ -10,11 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
     "ffmetadata": "^1.4.0",
     "fluent-ffmpeg": "^2.1.2",
     "mongoose": "^4.13.5",
     "q": "^1.5.1",
+    "spotify-web-api-node": "^2.5.0",
     "winston": "^2.4.0",
     "ytdl-core": "^0.14.4"
   },
