@@ -6,7 +6,13 @@ process.on('unhandledRejection', (reason) => {
     });
 });
 
-var express = require('express'),
+let mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/soundman');
+
+let test = require('./api/spotify.js');
+test();
+
+let express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),
 	download = require('./api/download.js'),

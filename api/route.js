@@ -9,8 +9,6 @@ let express = require('express'),
 	Credentials = require('./credentials.js'),
 	credentials_file = require('./spotify.json');
 
-mongoose.connect('mongodb://localhost/soundman');
-
 let db = mongoose.connection;
 
 let spotifyApi = new Spotify({
@@ -52,6 +50,8 @@ router.get('/auth', (req, res) => {
 				spotify_refresh: data.body.refresh_token,
 				spotify_expires: data.body.expires_in,
 			});
+
+			console.log(data);
 
 			cred.save(err => {
 				if (err) {

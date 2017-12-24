@@ -10,6 +10,7 @@ musicSchema = new Schema({
 	cover: { type: String, default: '' },
 	file_name: { type: String, default: '' },
 	playlist: { type: String, default: '' },
+	spotify: { type: Boolean, default: true },
 	tries: { type: Number, default: 0 },
 	status: { type: String, default: 'pending' },
 	// wip: add to google drive
