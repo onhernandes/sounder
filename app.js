@@ -12,7 +12,6 @@ mongoose.connect('mongodb://localhost/soundman');
 let express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),
-	download = require('./api/download.js'),
 	routes = require('./api/route.js');
 
 app.set('views', __dirname + '/public');
