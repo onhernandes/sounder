@@ -9,9 +9,6 @@ process.on('unhandledRejection', (reason) => {
 let mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/soundman');
 
-let test = require('./api/spotify.js');
-test();
-
 let express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),
@@ -31,13 +28,6 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 
 app.use('/', routes);
-
-download();
-// Check queue and download every 5 min
-setInterval(function() {
-	// download();
-	// console.log('App running now!');
-}, 1000);
 
 app.listen(3000, () => {
 	console.log('Started');

@@ -11,6 +11,8 @@ musicSchema = new Schema({
 	file_name: { type: String, default: '' },
 	playlist: { type: String, default: '' },
 	spotify: { type: Boolean, default: true },
+	spotify_status: { type: String, default: '' },
+	spotify_uri: { type: String, default: '' },
 	tries: { type: Number, default: 0 },
 	status: { type: String, default: 'pending' },
 	// wip: add to google drive

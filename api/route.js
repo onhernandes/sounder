@@ -51,8 +51,6 @@ router.get('/auth', (req, res) => {
 				spotify_expires: data.body.expires_in,
 			});
 
-			console.log(data);
-
 			cred.save(err => {
 				if (err) {
 					res.write('Error on writing to Mongo');
@@ -61,12 +59,9 @@ router.get('/auth', (req, res) => {
 
 				res.write('Credentials saved successfully! You can use the app.');
 				res.end();
-				return;
 			});
-		}, function(err) {
-			console.log('Something went wrong!', err);
-			return;
-		});
+		})
+		.catch(err => logger.log('error', 'Something went wrong!', err));
 });
 
 
