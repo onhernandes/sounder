@@ -72,7 +72,7 @@ router.post('/api/music/', (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
 	logger.log('info', 'Before checking values');
 	let post = req.body,
-		basic = ['title', 'url', 'author', 'album', 'cover'],
+		basic = ['title', 'url', 'author', 'album', 'cover', 'playlist', 'spotify'],
 		has = false;
 
 	// simpliest (and dirty? idk) way to check and validate for parameters

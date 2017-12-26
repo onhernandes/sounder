@@ -9,7 +9,7 @@ Use:
 - fluent-ffmpeg
 - ffmetadata
 
-Data is sent to MongoDB then is stored as pending downloads. The api itself checks for pending downloads and starts new ones if needed each 5 minutes. Simple.
+Data is sent to MongoDB then is stored as pending downloads. You can use the files in cli/ to execute mass operations like downloading and sending to Spotify.
 
 -----------
 
@@ -20,6 +20,7 @@ You could just import our [Postman's Collection](Soundman.collection.json) and t
 ### POST - Add new music
 
 The following fields defaults to what YT can give to us: `cover`, `author`, `title`
+Every music will be sent to a Spotify playlist, if not defined, will be added to `Soundman`. You can set `"spotify": false` to avoid this. This feature depends on the song being found within Spotify!
 
 Endpoint: `/api/music`
 
@@ -29,7 +30,9 @@ Endpoint: `/api/music`
 	"cover": "string",
 	"author": "string",
 	"album": "string",
-	"title": "string"
+	"title": "string",
+	"playlist": "string",
+	"spotify": "bool",
 }
 ```
 
@@ -78,13 +81,20 @@ You can just pass the `video_id` for getting a music or you can use the followin
     "album": "string",
     "author": "string",
     "cover": "string",
-    "status": "string"
+    "status": "string",
+	"playlist": "string",
+	"spotify": "bool",
+	"spotify_status": "string",
+	"spotify_uri": "string",
+	"tries": "integer",
+	"status": "string",
+	"file_name": "string"
   }
 ]
 ```
 
 
-#### Error
+#### Error or Not Found
 
 Just returns an empty array.
 
@@ -102,6 +112,8 @@ Endpoint: `/api/music/:video_id`
 	"cover": "string",
 	"album": "string",
 	"author": "string",
+	"playlist": "string",
+	"spotify": "bool",
 	"update": "bool"
 }
 ```
@@ -116,7 +128,9 @@ Endpoint: `/api/music/:video_id`
 	"album": "string",
 	"author": "string",
 	"cover": "string",
-	"status": "string"
+	"status": "string",
+	"playlist": "string",
+	"spotify": "bool",
 }
 ```
 
