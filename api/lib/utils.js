@@ -82,35 +82,37 @@ function getDownloading() {
 }
 
 function getPending() {
-	return Music.find({status: 'pending'}).limit(5).exec();
+	return Music.find({status: 'pending'}).exec();
 }
 
 function getData() {
-	yt.getInfo('https://www.youtube.com/watch?v=BlYj1FcAUDs')
-		.then(data => {
-			let metadata = {};
+	return new Promise((resolve, reject) => {
+		yt.getInfo('https://www.youtube.com/watch?v=BlYj1FcAUDs')
+			.then(data => {
+				let metadata = {};
 
-			if (data.title !== null && data.title !== undefined && data.title.length > 0) {
-				metadata.title = data.title;
-			} else {
-				metadata.title = '';
-			}
+				if (data.title !== null && data.title !== undefined && data.title.length > 0) {
+					metadata.title = data.title;
+				} else {
+					metadata.title = '';
+				}
 
-			if (data.author.name !== null && data.author.name !== undefined && data.author.name.length > 0) {
-				metadata.author = data.author.name;
-			} else {
-				metadata.author = '';
-			}
+				if (data.author.name !== null && data.author.name !== undefined && data.author.name.length > 0) {
+					metadata.author = data.author.name;
+				} else {
+					metadata.author = '';
+				}
 
-			if (data.iurlmaxres !== null && data.iurlmaxres !== undefined && data.iurlmaxres.length > 0) {
-				metadata.cover = data.iurlmaxres;
-			} else {
-				metadata.cover = '';
-			}
+				if (data.iurlmaxres !== null && data.iurlmaxres !== undefined && data.iurlmaxres.length > 0) {
+					metadata.cover = data.iurlmaxres;
+				} else {
+					metadata.cover = '';
+				}
 
-			return metadata;
-		})
-		.catch(e => console.log(e));
+				resolve(metadata);
+			})
+			.catch(e => reject(e));
+	});
 }
 
 function writeMusicData(music) {

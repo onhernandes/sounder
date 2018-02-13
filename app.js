@@ -23,6 +23,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // public data 
 app.use(express.static('public'));
  
+require('./cli/download.js')();
+
 // parse application/json 
 app.use(bodyParser.json());
 

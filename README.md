@@ -1,5 +1,7 @@
 # SoundMan - YouTube Downloader API
 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 Download YouTube videos as MP3, setting metadata like artist, album, cover and more!
 
 Use:

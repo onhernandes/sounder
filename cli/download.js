@@ -8,10 +8,10 @@ let mongoose = require('mongoose'),
 		getDownloading,
 		getPending,
 		getData
-	} = require('./utils.js'),
+	} = require('../api/utils.js'),
 	path = require('path'),
-	logger = require('./logger.js'),
-	Music = require('./schema.js');
+	logger = require('../api/logger.js'),
+	Music = require('../api/schema.js');
 
 // Use Q.Promise on Mongoose
 mongoose.Promise = Q.Promise;
@@ -35,6 +35,8 @@ function download(music) {
 				resolve(status);
 			})
 			.catch(e => {
+				music.status = 'error';
+				music.save(() => {});
 				reject(e);
 			});
 	});
@@ -46,12 +48,7 @@ function check() {
 	logger.log('info', 'Start checking');
 	return getDownloading()
 		.then(res => {
-			if (res.length < 5) {
-				downloading = res.length;
-				return getPending();
-			} else {
-				return false;
-			}
+			return getPending();
 		})
 		.then(pending => {
 			if (!pending || pending.length === 0) {
@@ -65,9 +62,10 @@ function check() {
 			return all;
 		})
 		.then(list => list.map(download))
-		.then(run => {
+		.then(run => Promise.all(run))
+		.then(ran => {
 			logger.log('info', 'Status: ');
-			logger.log('info', Promise.all(run));
+			logger.log('info', ran);
 			logger.log('info', 'Done checking');
 		})
 		.catch(err => {
@@ -76,4 +74,4 @@ function check() {
 		});
 }
 
-check();
+module.exports = check;
