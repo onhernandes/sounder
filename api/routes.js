@@ -1,7 +1,5 @@
-const music = require('music/route.js')
-const login = require('login/route.js')
+const music = require('./music/route.js')
 
-module.exports = (app) => {
-  app.use('/api/login', login)
-  app.use('/api/music', music)
+module.exports = {
+  '/api/music': music
 }

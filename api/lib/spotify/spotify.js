@@ -17,9 +17,9 @@ function Spotify (data, credentials) {
   this.api.setAccessToken(credentials.spotify_access)
   this.api.setRefreshToken(credentials.spotify_refresh)
 
-/**
-* {@return} an array of musics allowed to Spotify
-*/
+  /**
+  * {@return} an array of musics allowed to Spotify
+  */
   this.getAvailable = () => {
     return Music.find({ spotify: true, status: 'pending' })
   }

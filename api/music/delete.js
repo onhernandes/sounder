@@ -1,4 +1,5 @@
 const Music = require('./schema.js')
+const MusicError = require('./error.js')
 const path = require('path')
 const fs = require('fs-extra')
 
@@ -6,36 +7,30 @@ module.exports = async (params) => {
   let found
 
   if (!params.hasOwnProperty('video_id')) {
-    return {
+    throw new MusicError({
       status: 'error',
       message: 'video_id does not exists!'
-    }
+    }, 400)
   }
 
   try {
     found = await Music.findOneAndRemove({ video_id: { $eq: params.video_id } }).exec()
   } catch (e) {
-    return {
+    throw new MusicError({
       status: 'error',
       message: 'Music not found!'
-    }
+    }, 404)
   }
+
+  found = found.toObject()
 
   try {
     let file = path.resolve(__dirname, '../music/' + found.file_name)
     await fs.remove(file)
   } catch (e) {
-    return {
-      status: 'deleted',
-      message: 'Music deleted from our database but the file was not found!',
-      title: found.title,
-      url: found.url
-    }
+    found.message = 'Deleted from database but the file was not found in the server'
+    return found
   }
 
-  return {
-    status: 'deleted',
-    title: found.title,
-    url: found.url
-  }
+  return found
 }
