@@ -2,6 +2,7 @@ const Music = require('./schema.js')
 const MusicError = require('./error.js')
 const path = require('path')
 const fs = require('fs-extra')
+const mongofilter = require('../helpers/mongo_filter.js')
 
 module.exports = async (params) => {
   let found
@@ -25,12 +26,10 @@ module.exports = async (params) => {
   found = found.toObject()
 
   try {
-    let file = path.resolve(__dirname, '../music/' + found.file_name)
+    let file = path.resolve(__dirname, '../../music/' + found.file_name)
     await fs.remove(file)
   } catch (e) {
-    found.message = 'Deleted from database but the file was not found in the server'
-    return found
   }
 
-  return found
+  return mongofilter(found)
 }

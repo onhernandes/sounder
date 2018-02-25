@@ -1,4 +1,16 @@
 module.exports = (item, list) => {
+  if (!Array.isArray(list)) {
+    list = []
+  }
+
+  if (list.indexOf('__v') === -1) {
+    list.push('__v')
+  }
+
+  if (list.indexOf('tries') === -1) {
+    list.push('tries')
+  }
+
   if (Array.isArray(item)) {
     return item.map(cursor => {
       Object.keys(cursor).map(k => {
