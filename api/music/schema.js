@@ -34,6 +34,19 @@ musicSchema.statics.getYoutubeID = (url) => {
   }
 }
 
+musicSchema.statics.increaseTries = async (id) => {
+  let item = await this.findById(id).lean().exec()
+  item.tries++
+
+  if (item.tries >= 5) {
+    item.status = 'error'
+  } else {
+    item.status = 'pending'
+  }
+
+  return item.save()
+}
+
 /*
 * status: pending | downloading | downloaded
 */

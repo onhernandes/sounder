@@ -4,6 +4,8 @@ process.on('unhandledRejection', (reason) => {
     message: reason.message,
     stack: reason.stack
   })
+
+  process.exit(0)
 })
 
 let mongoose = require('mongoose')
