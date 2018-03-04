@@ -35,7 +35,7 @@ musicSchema.statics.getYoutubeID = (url) => {
 }
 
 musicSchema.statics.increaseTries = async (id) => {
-  let item = await this.findById(id).lean().exec()
+  let item = await this.find({ _id: id }).lean().exec()
   item.tries++
 
   if (item.tries >= 5) {

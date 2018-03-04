@@ -1,60 +1,75 @@
 const path = require('path')
-const logger = require('./logger.js')
+const logger = require('../../helpers/logger.js')
 const yt = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
-const meta = require('ffmetadata')
-const stream = require('stream')
-const Music = require('./schema.js')
+const ffmetadata = require('ffmetadata')
+const Music = require('../../music/schema.js')
+const fs = require('fs')
+const fse = require('fs-extra')
+const MUSIC_FOLDER = '../../../music/'
 
-function Youtube (url) {
-  this.url = url
+function Youtube (music) {
+  this.url = music.url
+  this.music = music
 }
 
-Youtube.prototype.getData = async function () {
-  let data = await yt.getInfo(this.url)
-  return data
+Youtube.prototype.download = function () {
+  return new Promise((resolve, reject) => {
+    let final = `/tmp/${this.music._id}.mp4`
+    let write = fs.createWriteStream(path.resolve(__dirname, final))
+
+    write.on('open', (fd) => {
+      yt(this.url, { quality: 'lowest' })
+        .pipe(write)
+        .on('finish', () => {
+          resolve(final)
+        })
+        .on('error', (err, stdout, stdsomething) => {
+          reject(err)
+        })
+    })
+  })
 }
 
-Youtube.prototype.download = async function () {
-  return yt(this.url, { quality: 'lowest' })
-}
-
-Youtube.prototype.convert = async function (readable, id, filename) {
-  let file = path.resolve(__dirname, '../../music/' + filename)
+Youtube.prototype.convert = async function (tmp, filename) {
+  let file = path.resolve(__dirname, MUSIC_FOLDER + filename)
+  let id = this.music._id
 
   return new Promise((resolve, reject) => {
-    if (!(readable instanceof stream.Stream) && typeof (readable._read) !== 'function' && typeof (readable._readableState) !== 'object') {
-      Music.increaseTries(id)
-        .then(() => reject(new Error('Did not received a readable stream from ytdl-core')))
-    }
+    let converting
 
-    let converting = ffmpeg(readable)
-      .noVideo()
-      .audioCodec('libmp3lame')
-      .save(file)
-
-    converting.on('error', (err, stdout, stderr) => {
-      // get status back to 'pending'
-      logger.log('error', 'error when converting music', {
-        err: err.message,
-        stdout: stdout,
-        stderr: stderr,
-        id: id
+    fse.pathExists(tmp)
+      .then(exists => {
+        if (!exists) {
+          reject(new Error(`file ${tmp} does not exists`))
+        }
       })
+      .catch(reject)
+      .then(() => {
+        converting = ffmpeg(tmp)
+          .noVideo()
+          .audioCodec('libmp3lame')
+          .save(file)
 
-      Music.increaseTries(id)
-        .then(() => reject(new Error('could not convert music')))
-    })
+        converting.on('error', (err, stdout, stderr) => {
+          // get status back to 'pending'
+          logger.log('error', 'error when converting music', {
+            err: err.message,
+            stdout: stdout,
+            stderr: stderr,
+            id: id
+          })
 
-    converting.on('start', () => {
-      // update status to 'downloading'
-      Music.findByIdAndUpdate(id, {status: 'downloading'}, () => { })
-    })
+          reject(err)
+        })
 
-    converting.on('end', () => {
-      Music.findByIdAndUpdate(id, {status: 'downloaded'}, () => { })
-      resolve(true)
-    })
+        converting.on('start', () => {
+        })
+
+        converting.on('end', () => {
+          resolve(file)
+        })
+      })
   })
 }
 
@@ -62,17 +77,20 @@ Youtube.prototype.getData = async function (url) {
   let info = await yt.getInfo(this.url || url)
 
   return {
-    title: info.title || '',
-    author: info.author.name || '',
-    cover: info.iurlmaxres || ''
+    title: info.title,
+    author: info.author.name,
+    cover: info.iurlmaxres
   }
 }
 
-Youtube.prototype.writeMusicData = async function (filename, data) {
+Youtube.prototype.writeMetaData = async function (filename, data) {
   return new Promise((resolve, reject) => {
-    let file = path.resolve(__dirname, '../music/' + filename)
-    let options = {
-      attachments: data.cover
+    // let file = path.resolve(__dirname, MUSIC_FOLDER + filename)
+    let file = filename
+    let options = {}
+
+    if (data.cover) {
+      options.attachments = data.cover
     }
 
     let metadata = {
@@ -82,12 +100,12 @@ Youtube.prototype.writeMusicData = async function (filename, data) {
       artist: data.author || ''
     }
 
-    meta.write(file, metadata, options, err => {
+    ffmetadata.write(file, metadata, options, err => {
       if (err) {
         reject(err)
       }
 
-      resolve()
+      resolve(true)
     })
   })
 }
