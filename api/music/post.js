@@ -1,6 +1,7 @@
 const Music = require('./schema.js')
 const mongofilter = require('../helpers/mongo_filter.js')
 const MusicError = require('./error.js')
+const yt = require('ytdl-core')
 
 async function _post (body) {
   let post = body
@@ -20,7 +21,7 @@ async function _post (body) {
     }
   })
 
-  post.video_id = Music.getYoutubeID(post.url)
+  post.video_id = yt.getURLVideoID(post.url)
 
   if (!post.video_id) {
     throw new MusicError({

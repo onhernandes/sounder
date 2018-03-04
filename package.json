@@ -19,6 +19,7 @@
     "mongoose": "^5.0.7",
     "q": "^1.5.1",
     "spotify-web-api-node": "^2.5.0",
+    "valid-url": "^1.0.9",
     "winston": "^2.4.0",
     "ytdl-core": "^0.20.2"
   },

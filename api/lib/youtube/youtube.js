@@ -3,14 +3,20 @@ const logger = require('../../helpers/logger.js')
 const yt = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
 const ffmetadata = require('ffmetadata')
-const Music = require('../../music/schema.js')
 const fs = require('fs')
 const fse = require('fs-extra')
 const MUSIC_FOLDER = '../../../music/'
+const validUrl = require('valid-url')
+const urlToFile = require('../../helpers/url_to_file.js')
 
 function Youtube (music) {
+  if (!yt.validateURL(music.url)) {
+    throw new Error(`Given music URL is invalid!`)
+  }
+
   this.url = music.url
   this.music = music
+  this.video_id = yt.getURLVideoID(music.url)
 }
 
 Youtube.prototype.download = function () {
@@ -83,14 +89,26 @@ Youtube.prototype.getData = async function (url) {
   }
 }
 
+Youtube.prototype.getImageURL = function (videoid) {
+  return `https://i.ytimg.com/vi/${videoid || this.video_id}/hqdefault.jpg`
+}
+
 Youtube.prototype.writeMetaData = async function (filename, data) {
   return new Promise((resolve, reject) => {
     // let file = path.resolve(__dirname, MUSIC_FOLDER + filename)
     let file = filename
     let options = {}
 
-    if (data.cover) {
-      options.attachments = data.cover
+    if (data.cover && Array.isArray(data.cover)) {
+      options.attachments = data.cover.map(async string => {
+        if (validUrl.isUri(string)) {
+          return urlToFile(string, path.resolve(__dirname, MUSIC_FOLDER + `${Math.random()}.jpeg`), (url) => {
+            return url.indexOf('jpg') !== -1 || url.indexOf('jpeg') !== -1
+          })
+        } else {
+          return string
+        }
+      })
     }
 
     let metadata = {
@@ -100,13 +118,31 @@ Youtube.prototype.writeMetaData = async function (filename, data) {
       artist: data.author || ''
     }
 
-    ffmetadata.write(file, metadata, options, err => {
-      if (err) {
-        reject(err)
-      }
+    fse.pathExists(file)
+      .then(exists => {
+        if (!exists) {
+          reject(new Error('File does not exists!'))
+        }
 
-      resolve(true)
-    })
+        if (options.attachments) {
+          return Promise.all(options.attachments)
+        } else {
+          return []
+        }
+      })
+      .then((maybeattachments) => {
+        if (options.attachments) {
+          options.attachments = maybeattachments
+        }
+
+        ffmetadata.write(file, metadata, options, err => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(true)
+        })
+      })
   })
 }
 
