@@ -7,7 +7,6 @@ const fs = require('fs')
 const fse = require('fs-extra')
 const MUSIC_FOLDER = '../../../music/'
 const validUrl = require('valid-url')
-const urlToFile = require('../../helpers/url_to_file.js')
 
 function Youtube (music) {
   if (!yt.validateURL(music.url)) {
@@ -58,7 +57,6 @@ Youtube.prototype.convert = async function (tmp, filename) {
           .save(file)
 
         converting.on('error', (err, stdout, stderr) => {
-          // get status back to 'pending'
           logger.log('error', 'error when converting music', {
             err: err.message,
             stdout: stdout,
@@ -69,8 +67,7 @@ Youtube.prototype.convert = async function (tmp, filename) {
           reject(err)
         })
 
-        converting.on('start', () => {
-        })
+        converting.on('start', () => {})
 
         converting.on('end', () => {
           resolve(file)
@@ -93,22 +90,21 @@ Youtube.prototype.getImageURL = function (videoid) {
   return `https://i.ytimg.com/vi/${videoid || this.video_id}/hqdefault.jpg`
 }
 
+Youtube.prototype.generateCover = function () {
+  if (!this.music.cover || this.music.cover.length === 0) {
+    return [this.getImageURL()]
+  } else {
+    return this.music.cover
+  }
+}
+
 Youtube.prototype.writeMetaData = async function (filename, data) {
   return new Promise((resolve, reject) => {
-    // let file = path.resolve(__dirname, MUSIC_FOLDER + filename)
     let file = filename
     let options = {}
 
     if (data.cover && Array.isArray(data.cover)) {
-      options.attachments = data.cover.map(async string => {
-        if (validUrl.isUri(string)) {
-          return urlToFile(string, path.resolve(__dirname, MUSIC_FOLDER + `${Math.random()}.jpeg`), (url) => {
-            return url.indexOf('jpg') !== -1 || url.indexOf('jpeg') !== -1
-          })
-        } else {
-          return string
-        }
-      })
+      options.attachments = data.cover
     }
 
     let metadata = {
@@ -119,30 +115,19 @@ Youtube.prototype.writeMetaData = async function (filename, data) {
     }
 
     fse.pathExists(file)
-      .then(exists => {
-        if (!exists) {
-          reject(new Error('File does not exists!'))
+    .then(exists => {
+      if (!exists) {
+        reject(new Error('File does not exists!'))
+      }
+
+      ffmetadata.write(file, metadata, options, err => {
+        if (err) {
+          reject(err)
         }
 
-        if (options.attachments) {
-          return Promise.all(options.attachments)
-        } else {
-          return []
-        }
+        resolve(true)
       })
-      .then((maybeattachments) => {
-        if (options.attachments) {
-          options.attachments = maybeattachments
-        }
-
-        ffmetadata.write(file, metadata, options, err => {
-          if (err) {
-            reject(err)
-          }
-
-          resolve(true)
-        })
-      })
+    })
   })
 }
 

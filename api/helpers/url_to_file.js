@@ -1,5 +1,6 @@
 const http = require('http')
-const fse = require('fs-extra')
+const https = require('https')
+const fs = require('fs')
 
 /**
  * Downloads data from a given URL then writes to a file
@@ -16,19 +17,24 @@ module.exports = async (url, file, validator) => {
     }
   }
 
-  let binary = await new Promise((resolve, reject) => {
-    http.get(url, (response) => {
-      let data
+  let wstream = fs.createWriteStream(file)
 
-      response.on('data', (chunk) => {
-        data += chunk
+  return new Promise((resolve, reject) => {
+    let cb = (response) => {
+      response.pipe(wstream)
+      wstream.on('finish', function () {
+        wstream.close(() => resolve(file))
       })
+    }
 
-      response.on('end', () => {
-        resolve(data)
-      })
-    }).on('error', reject)
+    let req
+
+    if (url.indexOf('https') !== -1) {
+      req = https.get(url, cb)
+    } else {
+      req = http.get(url, cb)
+    }
+
+    req.on('error', reject)
   })
-
-  return fse.outputFile(file, binary)
 }
