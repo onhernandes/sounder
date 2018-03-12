@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
+    "jasmine": "^3.1.0",
     "nodemon": "^1.17.1"
   }
 }
