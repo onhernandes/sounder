@@ -1,3 +1,0 @@
-/* eslint-env jasmine */
-
-describe('', () => {})
