@@ -2,9 +2,10 @@
   "name": "soundman",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +25,7 @@
     "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
-    "jasmine": "^3.1.0",
+    "jest": "^22.4.2",
     "nodemon": "^1.17.1"
   }
 }

@@ -10,7 +10,7 @@ process.on('unhandledRejection', (reason) => {
 
 let mongoose = require('mongoose')
 mongoose.Promise = Promise
-mongoose.connect('mongodb://localhost/soundman', { useMongoClient: true })
+mongoose.connect('mongodb://localhost/soundman')
 let path = require('path')
 let express = require('express')
 let app = express()

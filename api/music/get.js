@@ -28,7 +28,7 @@ module.exports = async (params, query) => {
   }
 
   if (typeof (query.title) !== 'undefined') {
-    query.title = /query.title/
+    query.title = new RegExp(query.title)
   }
 
   if (typeof (query.url) !== 'undefined') {
@@ -36,7 +36,7 @@ module.exports = async (params, query) => {
   }
 
   if (typeof (query.album) !== 'undefined') {
-    query.album = /query.album/
+    query.album = new RegExp(query.album)
   }
 
   if (typeof (query.author) !== 'undefined') {

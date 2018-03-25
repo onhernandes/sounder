@@ -31,7 +31,8 @@ async function _post (body) {
 
   try {
     let song = new Music(post)
-    return mongofilter((await song.save()).toObject())
+    let saved = await song.save()
+    return mongofilter(saved.toObject())
   } catch (e) {
     if (e.code === 11000) {
       throw new MusicError({
