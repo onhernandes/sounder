@@ -1,7 +1,7 @@
 require('../../api/init/db.js')()
 const cluster = require('cluster')
 const numCPUs = require('os').cpus().length
-const Music = require('../../api/music/schema.js')
+const Music = require('../../api/models/music/schema.js')
 let songs
 
 if (cluster.isMaster) {
