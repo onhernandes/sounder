@@ -1,5 +1,5 @@
 const Music = require('./schema.js')
-const mongofilter = require('../helpers/mongo_filter.js')
+const mongofilter = require('../../helpers/mongo_filter.js')
 const MusicError = require('./error.js')
 
 module.exports = async (params, query) => {

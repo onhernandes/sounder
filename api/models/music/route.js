@@ -4,7 +4,7 @@ let _delete = require('./delete.js')
 let _post = require('./post.js')
 let _put = require('./put.js')
 let _get = require('./get.js')
-let logger = require('../helpers/logger.js')
+let logger = require('../../helpers/logger.js')
 
 /*
 * logging middleware
