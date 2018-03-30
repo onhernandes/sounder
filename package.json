@@ -8,7 +8,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "precommit": "standard",
-    "prepush": "standard && jest",
+    "prepush": "standard && jest && echo 'asdfasdf'",
   },
   "author": "",
   "license": "ISC",
