@@ -1,17 +1,10 @@
-const Music = require('./schema')
+const User = require('./schema')
 const mongofilter = require('../helpers/mongo_filter')
-const MusicError = require('./error')
-const yt = require('ytdl-core')
+const UserError = require('./error')
 
 async function _post (body) {
   let post = body
-  let basic = ['title', 'url', 'author', 'album', 'cover', 'playlist', 'spotify']
-
-  if (!post.hasOwnProperty('url')) {
-    throw new MusicError({
-      error: 'URL not found'
-    }, 400)
-  }
+  let basic = ['name', 'username', 'email', 'password', 'active', 'admin', 'token']
 
   // simpliest (and dirty? idk) way to check and validate for parameters
   Object.keys(post).forEach(key => {
@@ -21,30 +14,21 @@ async function _post (body) {
     }
   })
 
-  post.video_id = yt.getURLVideoID(post.url)
-
-  if (!post.video_id) {
-    throw new MusicError({
-      error: 'Could not parse YoutubeID!'
-    }, 400)
-  }
-
   try {
-    let song = new Music(post)
-    let saved = await song.save()
-    return mongofilter(saved.toObject())
+    let user = new User(post)
+    return mongofilter((await user.save()).toObject())
   } catch (e) {
     if (e.code === 11000) {
-      throw new MusicError({
-        error: 'Music already exists'
+      throw new UserError({
+        error: 'User already exists'
       }, 409)
-    } else {
-      throw new MusicError({
-        error: e.name,
-        message: e.message,
-        code: e.code
-      }, 400)
     }
+
+    throw new UserError({
+      error: e.name,
+      message: e.message,
+      code: e.code
+    }, 400)
   }
 }
 
@@ -65,7 +49,7 @@ module.exports = async (body) => {
     if (err < body.length) {
       return all
     } else {
-      throw new MusicError(all, 409)
+      throw new UserError(all, 409)
     }
   }
 

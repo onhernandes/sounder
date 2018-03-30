@@ -1,6 +1,6 @@
-const Music = require('./schema.js')
-const mongofilter = require('../helpers/mongo_filter.js')
-const MusicError = require('./error.js')
+const Music = require('./schema')
+const mongofilter = require('../helpers/mongo_filter')
+const MusicError = require('./error')
 
 module.exports = async (params, query) => {
   if (params.video_id) {
