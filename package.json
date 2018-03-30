@@ -5,7 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "precommit": "standard",
+    "prepush": "standard && jest",
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +23,7 @@
     "fs-extra": "^5.0.0",
     "mongoose": "^5.0.12",
     "q": "^1.5.1",
+    "require-directory": "^2.1.1",
     "spotify-web-api-node": "^2.5.0",
     "valid-url": "^1.0.9",
     "winston": "^2.4.1",
@@ -27,6 +31,7 @@
   },
   "devDependencies": {
     "jest": "^22.4.2",
-    "nodemon": "^1.17.1"
+    "nodemon": "^1.17.1",
+    "standard": "^11.0.1"
   }
 }
