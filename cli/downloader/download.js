@@ -1,6 +1,6 @@
 require('../../api/init/db.js')()
 const YT = require('../../api/lib/youtube/youtube.js')
-const Music = require('../../api/music/schema.js')
+const Music = require('../../api/models/music/schema.js')
 const fs = require('fs-extra')
 const path = require('path')
 const urlToFile = require('../../api/helpers/url_to_file.js')
@@ -36,7 +36,7 @@ const exec = async (music) => {
     }
 
     mp3data.cover = mp3data.cover.map(it => {
-      const finalfile = path.resolve(__dirname, `../../music/${Date.now()}_${Math.random()}.jpeg`)
+      const finalfile = path.resolve(__dirname, `../../models/music/${Date.now()}_${Math.random()}.jpeg`)
       const urlvalid = (url) => {
         return url.indexOf('jpg') !== 1 || url.indexOf('jpeg') !== 1 || url.indexOf('png') !== 1
       }

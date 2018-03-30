@@ -23,9 +23,9 @@ router.use((req, res, next) => {
 })
 
 /*
-* GET: get a specific music data using video_id
+* GET: get a specific music data using id
 */
-router.get('/:video_id?', (req, res) => {
+router.get('/:id?', (req, res) => {
   _get(req.params, req.query)
     .then(result => {
       res.end(JSON.stringify(result, null, 2))
@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
 /*
 * DELETE: deletes a music
 */
-router.delete('/:video_id', (req, res) => {
+router.delete('/:id', (req, res) => {
   _delete(req.params)
     .then(result => {
       res.end(JSON.stringify(result, null, 2))
@@ -76,7 +76,7 @@ router.delete('/:video_id', (req, res) => {
 /*
 * PUT: updates a music title, cover, album and author
 */
-router.put('/:video_id', (req, res) => {
+router.put('/:id', (req, res) => {
   _put(req.params, req.body)
     .then(result => {
       res.status(204).end()
