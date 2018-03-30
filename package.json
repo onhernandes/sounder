@@ -4,11 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "node_modules/.bin/jest",
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "pre-commit": "jest",
-    "prepush": "standard && jest"
+    "dev": "node_modules/.bin/nodemon app.js",
+    "precommit": "node_modules/.bin/jest",
+    "prepush": "node_modules/.bin/standard && node_modules/.bin/jest"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
+    "husky": "^0.14.3",
     "jest": "^22.4.2",
     "nodemon": "^1.17.1",
     "standard": "^11.0.1"
