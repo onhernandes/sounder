@@ -2,17 +2,17 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 let musicSchema = new Schema({
-  title: { type: String, default: '' },
-  url: { type: String, default: '' },
-  video_id: { type: String, default: '', unique: true },
-  author: { type: String, default: '' },
-  album: { type: String, default: '' },
-  cover: { type: String, default: '' },
-  file_name: { type: String, default: '' },
-  playlist: { type: String, default: '' },
+  title: { type: String },
+  url: { type: String },
+  video_id: { type: String, unique: true },
+  author: { type: String },
+  album: { type: String },
+  cover: { type: String },
+  file_name: { type: String },
+  playlist: { type: String },
   spotify: { type: Boolean, default: true },
-  spotify_status: { type: String, default: '' },
-  spotify_uri: { type: String, default: '' },
+  spotify_status: { type: String },
+  spotify_uri: { type: String },
   tries: { type: Number, default: 0 },
   status: { type: String, default: 'pending' }
 })

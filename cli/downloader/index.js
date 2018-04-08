@@ -1,38 +1,40 @@
-require('../../api/init/db')()
-const cluster = require('cluster')
-const numCPUs = require('os').cpus().length
-const Music = require('../../api/models/music/schema')
-let songs
+const db = require('../../api/init/db')
 
-if (cluster.isMaster) {
-  Music.find({ status: 'pending' }).exec()
-    .then(result => {
-      songs = result
+db('mongodb://localhost/soundman')
+  .then(mongoose => {
+    const cluster = require('cluster')
+    const Music = mongoose.model('Music')
+    let numCPUs = require('os').cpus().length
 
-      if (songs.length === 0) {
-        console.log('There is no music to be processed.')
-        process.exit(0)
-      }
+    if (cluster.isMaster) {
+      Music.find({ status: 'pending' }).count().exec()
+        .then(result => {
+          if (result === 0) {
+            console.log('There is no music to be processed.')
+            process.exit(0)
+          }
 
-      console.log(`Got ${songs.length} songs, sending to workers`)
+          console.log(`Got ${result} songs, sending to workers`)
 
-      for (var i = 0; i < numCPUs; i++) {
-        cluster.fork()
-      }
+          for (var i = 0; i < numCPUs; i++) {
+            cluster.fork()
+          }
 
-      cluster.on('online', (worker) => {
-        if (songs.length > 0) {
-          worker.send({ data: songs.shift() })
-        }
-      })
+          cluster.on('online', (worker) => {
+            if (result > 0) {
+              result--
+            }
+          })
 
-      cluster.on('exit', (worker, code, signal) => {
-        if (songs.length > 0) {
-          cluster.fork()
-        }
-      })
-    })
-    .catch(e => console.error(e))
-} else {
-  require('./download')
-}
+          cluster.on('exit', (worker, code, signal) => {
+            if (result > 0) {
+              cluster.fork()
+            }
+          })
+        })
+        .catch(e => console.error(e))
+    } else {
+      require('./download')
+    }
+  })
+  .catch(console.error)
