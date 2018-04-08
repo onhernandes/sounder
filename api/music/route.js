@@ -1,10 +1,10 @@
 let express = require('express')
 let router = express.Router()
-let _delete = require('./delete.js')
-let _post = require('./post.js')
-let _put = require('./put.js')
-let _get = require('./get.js')
-let logger = require('../helpers/logger.js')
+let _delete = require('./delete')
+let _post = require('./post')
+let _put = require('./put')
+let _get = require('./get')
+let logger = require('../helpers/logger')
 
 /*
 * logging middleware

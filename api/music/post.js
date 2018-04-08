@@ -1,6 +1,6 @@
-const Music = require('./schema.js')
-const mongofilter = require('../helpers/mongo_filter.js')
-const MusicError = require('./error.js')
+const Music = require('mongoose').model('Music')
+const mongofilter = require('../helpers/mongo_filter')
+const MusicError = require('./error')
 const yt = require('ytdl-core')
 
 async function _post (body) {
@@ -31,7 +31,8 @@ async function _post (body) {
 
   try {
     let song = new Music(post)
-    return mongofilter((await song.save()).toObject())
+    let saved = await song.save()
+    return mongofilter(saved.toObject())
   } catch (e) {
     if (e.code === 11000) {
       throw new MusicError({

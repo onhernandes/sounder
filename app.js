@@ -8,31 +8,34 @@ process.on('unhandledRejection', (reason) => {
   process.exit(0)
 })
 
-let mongoose = require('mongoose')
-mongoose.Promise = Promise
-mongoose.connect('mongodb://localhost/soundman', { useMongoClient: true })
-let path = require('path')
-let express = require('express')
-let app = express()
-let bodyParser = require('body-parser')
-let routes = require('./api/routes.js')
+const db = require('./api/init/db')
 
-app.set('views', path.join(__dirname, '/public'))
-app.engine('html', require('ejs').renderFile)
+db('mongodb://localhost/soundman')
+  .then(mongoose => {
+    let path = require('path')
+    let express = require('express')
+    let app = express()
+    let bodyParser = require('body-parser')
+    let routes = require('./api/routes.js')
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+    app.set('views', path.join(__dirname, '/public'))
+    app.engine('html', require('ejs').renderFile)
 
-// public data
-app.use(express.static('public'))
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: false }))
 
-// parse application/json
-app.use(bodyParser.json())
+    // public data
+    app.use(express.static('public'))
 
-Object.keys(routes).forEach(key => {
-  app.use(key, routes[key])
-})
+    // parse application/json
+    app.use(bodyParser.json())
 
-app.listen(3000, () => {
-  console.log('Started')
-})
+    Object.keys(routes).forEach(key => {
+      app.use(key, routes[key])
+    })
+
+    app.listen(3000, () => {
+      console.log('Started')
+    })
+  })
+  .catch(console.error)

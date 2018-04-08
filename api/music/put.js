@@ -1,5 +1,5 @@
-const Music = require('./schema.js')
-const MusicError = require('./error.js')
+const Music = require('mongoose').model('Music')
+const MusicError = require('./error')
 
 module.exports = async (params, body) => {
   let found = false

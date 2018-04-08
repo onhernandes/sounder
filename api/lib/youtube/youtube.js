@@ -1,12 +1,11 @@
 const path = require('path')
-const logger = require('../../helpers/logger.js')
+const logger = require('../../helpers/logger')
 const yt = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
 const ffmetadata = require('ffmetadata')
 const fs = require('fs')
 const fse = require('fs-extra')
 const MUSIC_FOLDER = '../../../music/'
-const validUrl = require('valid-url')
 
 function Youtube (music) {
   if (!yt.validateURL(music.url)) {
@@ -115,19 +114,19 @@ Youtube.prototype.writeMetaData = async function (filename, data) {
     }
 
     fse.pathExists(file)
-    .then(exists => {
-      if (!exists) {
-        reject(new Error('File does not exists!'))
-      }
-
-      ffmetadata.write(file, metadata, options, err => {
-        if (err) {
-          reject(err)
+      .then(exists => {
+        if (!exists) {
+          reject(new Error('File does not exists!'))
         }
 
-        resolve(true)
+        ffmetadata.write(file, metadata, options, err => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(true)
+        })
       })
-    })
   })
 }
 

@@ -1,6 +1,6 @@
-const Music = require('./schema.js')
-const mongofilter = require('../helpers/mongo_filter.js')
-const MusicError = require('./error.js')
+const Music = require('mongoose').model('Music')
+const mongofilter = require('../helpers/mongo_filter')
+const MusicError = require('./error')
 
 module.exports = async (params, query) => {
   if (params.video_id) {
@@ -28,7 +28,7 @@ module.exports = async (params, query) => {
   }
 
   if (typeof (query.title) !== 'undefined') {
-    query.title = /query.title/
+    query.title = new RegExp(query.title)
   }
 
   if (typeof (query.url) !== 'undefined') {
@@ -36,7 +36,7 @@ module.exports = async (params, query) => {
   }
 
   if (typeof (query.album) !== 'undefined') {
-    query.album = /query.album/
+    query.album = new RegExp(query.album)
   }
 
   if (typeof (query.author) !== 'undefined') {
