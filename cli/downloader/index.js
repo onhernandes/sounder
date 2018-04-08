@@ -1,7 +1,7 @@
-require('../../api/init/db.js')()
+require('../../api/init/db')()
 const cluster = require('cluster')
 const numCPUs = require('os').cpus().length
-const Music = require('../../api/models/music/schema.js')
+const Music = require('../../api/models/music/schema')
 let songs
 
 if (cluster.isMaster) {
@@ -34,5 +34,5 @@ if (cluster.isMaster) {
     })
     .catch(e => console.error(e))
 } else {
-  require('./download.js')
+  require('./download')
 }

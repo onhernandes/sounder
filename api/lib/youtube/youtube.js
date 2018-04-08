@@ -1,5 +1,5 @@
 const path = require('path')
-const logger = require('../../helpers/logger.js')
+const logger = require('../../helpers/logger')
 const yt = require('ytdl-core')
 const ffmpeg = require('fluent-ffmpeg')
 const ffmetadata = require('ffmetadata')

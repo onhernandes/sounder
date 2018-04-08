@@ -1,4 +1,4 @@
-const Music = require('./schema')
+const Music = require('mongoose').model('Music')
 const MusicError = require('./error')
 
 module.exports = async (params, body) => {

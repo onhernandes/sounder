@@ -4,11 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "node_modules/.bin/jest",
+    "test": "node_modules/.bin/jest --runInBand",
     "start": "node app.js",
     "dev": "node_modules/.bin/nodemon app.js",
-    "precommit": "node_modules/.bin/jest",
-    "prepush": "node_modules/.bin/standard && node_modules/.bin/jest"
   },
   "author": "",
   "license": "ISC",
@@ -32,7 +30,13 @@
   "devDependencies": {
     "husky": "^0.14.3",
     "jest": "^22.4.2",
+    "mongodb-memory-server": "^1.7.3",
     "nodemon": "^1.17.1",
     "standard": "^11.0.1"
+  },
+  "jest": {
+    "globalSetup": "setup.js",
+    "globalTeardown": "teardown.js",
+    "testEnvironment": "js-env.js"
   }
 }

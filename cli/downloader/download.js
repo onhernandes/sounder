@@ -1,9 +1,9 @@
-require('../../api/init/db.js')()
-const YT = require('../../api/lib/youtube/youtube.js')
-const Music = require('../../api/models/music/schema.js')
+require('../../api/init/db')()
+const YT = require('../../api/lib/youtube/youtube')
+const Music = require('../../api/models/music/schema')
 const fs = require('fs-extra')
 const path = require('path')
-const urlToFile = require('../../api/helpers/url_to_file.js')
+const urlToFile = require('../../api/helpers/url_to_file')
 const pid = process.pid
 
 console.log(`Worker ${pid} started`)

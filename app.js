@@ -8,9 +8,7 @@ process.on('unhandledRejection', (reason) => {
   process.exit(0)
 })
 
-let mongoose = require('mongoose')
-mongoose.Promise = Promise
-mongoose.connect('mongodb://localhost/soundman')
+require('./api/init/db')('mongodb://localhost/soundman')
 let path = require('path')
 let express = require('express')
 let app = express()

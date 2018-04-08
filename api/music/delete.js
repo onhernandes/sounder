@@ -1,4 +1,4 @@
-const Music = require('./schema')
+const Music = require('mongoose').model('Music')
 const MusicError = require('./error')
 const path = require('path')
 const fs = require('fs-extra')

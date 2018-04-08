@@ -1,7 +1,5 @@
-const music = require('./music/route.js')
-const user = require('./user/route.js')
+const music = require('./music/route')
 
 module.exports = {
-  '/api/music': music,
-  '/api/user': user
+  '/api/music': music
 }

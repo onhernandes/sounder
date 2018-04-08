@@ -1,4 +1,4 @@
-const Music = require('./schema')
+const Music = require('mongoose').model('Music')
 const mongofilter = require('../helpers/mongo_filter')
 const MusicError = require('./error')
 const yt = require('ytdl-core')
