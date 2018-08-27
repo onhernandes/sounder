@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node_modules/.bin/jest --runInBand",
     "start": "node app.js",
+    "downloader": "node cli/downloader/index.js",
     "dev": "node_modules/.bin/nodemon app.js"
   },
   "author": "",

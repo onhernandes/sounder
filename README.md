@@ -19,6 +19,10 @@ Data is sent to MongoDB then is stored as pending downloads. You can use the fil
 
 You could just import our [Postman's Collection](Soundman.collection.json) and try right now!
 
+## Downloading
+
+To download songs, you just need to run `npm run downloader`. The songs will be downloaded to `$HOME/soundman/`
+
 ### POST - Add new music
 
 The following fields defaults to what YT can give to us: `cover`, `author`, `title`
