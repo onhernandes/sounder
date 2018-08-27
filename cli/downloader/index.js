@@ -1,4 +1,3 @@
-#!/usr/bin/node
 const db = require('../../api/init/db')
 const mongoose = require('mongoose')
 const downloader = require('./download')
