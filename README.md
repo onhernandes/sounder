@@ -11,7 +11,7 @@ Use:
 - fluent-ffmpeg
 - ffmetadata
 
-Data is sent to MongoDB then is stored as pending downloads. You can use the files in cli/ to execute mass operations like downloading and sending to Spotify.
+Data is sent to MongoDB then is stored as pending downloads. You can use the files in cli/ to download.
 
 -----------
 
@@ -22,38 +22,30 @@ You could just import our [Postman's Collection](Soundman.collection.json) and t
 ### POST - Add new music
 
 The following fields defaults to what YT can give to us: `cover`, `author`, `title`
-Every music will be sent to a Spotify playlist, if not defined, will be added to `Soundman`. You can set `"spotify": false` to avoid this. This feature depends on the song being found within Spotify!
 
 Endpoint: `/api/music`
 
 ```json
 {
-	"url": "string",
+	"url": "string - required",
 	"cover": "string",
 	"author": "string",
 	"album": "string",
-	"title": "string",
-	"playlist": "string",
-	"spotify": "bool",
+	"title": "string"
 }
 ```
 
 #### RESPONSE
 
 ```js
-{
-	status: 'created, will be downloaded soon'
-}
-```
-
-#### ERROR
-
-In case of providing wrong fields
-
-```js
-{
-	error: 'must have at least url parameter'
-}
+[
+  {
+    "status": "pending",
+    "_id": "",
+    "url": "",
+    "video_id": ""
+  }
+]
 ```
 
 ### GET - Search or get a specific music
@@ -83,25 +75,9 @@ You can just pass the `video_id` for getting a music or you can use the followin
     "album": "string",
     "author": "string",
     "cover": "string",
-    "status": "string",
-	"playlist": "string",
-	"spotify": "bool",
-	"spotify_status": "string",
-	"spotify_uri": "string",
-	"tries": "integer",
-	"status": "string",
-	"file_name": "string"
+    "status": "string"
   }
 ]
-```
-
-
-#### Error or Not Found
-
-Just returns an empty array.
-
-```json
-[]
 ```
 
 ### PUT - Update a music
@@ -113,10 +89,7 @@ Endpoint: `/api/music/:video_id`
 	"title": "string",
 	"cover": "string",
 	"album": "string",
-	"author": "string",
-	"playlist": "string",
-	"spotify": "bool",
-	"update": "bool"
+	"author": "string"
 }
 ```
 
@@ -130,17 +103,7 @@ Endpoint: `/api/music/:video_id`
 	"album": "string",
 	"author": "string",
 	"cover": "string",
-	"status": "string",
-	"playlist": "string",
-	"spotify": "bool",
-}
-```
-
-#### ERROR
-
-```json
-{
-	"error": "not found"
+	"status": "string"
 }
 ```
 
@@ -152,9 +115,13 @@ Endpoint: `/api/music/:video_id`
 
 ```json
 {
-	"status": "string",
 	"title": "string",
-	"url": "string"
+	"video_id": "string",
+	"url": "string",
+	"album": "string",
+	"author": "string",
+	"cover": "string",
+	"status": "string"
 }
 ```
 
