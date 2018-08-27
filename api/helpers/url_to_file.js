@@ -10,7 +10,7 @@ const fs = require('fs')
  * @throws {Error} if URL doesn't pass the validator
  * @returns {Promise}
  */
-module.exports = async (url, file, validator) => {
+module.exports = (url, file, validator) => {
   if (typeof validator === 'function') {
     if (!validator(url)) {
       throw new Error('Given URL did not match the validation!')

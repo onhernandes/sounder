@@ -27,27 +27,27 @@ module.exports = async (params, query) => {
     }
   }
 
-  if (typeof (query.title) !== 'undefined') {
+  if (query.title) {
     query.title = new RegExp(query.title)
   }
 
-  if (typeof (query.url) !== 'undefined') {
+  if (query.url) {
     query.url = /query.url/
   }
 
-  if (typeof (query.album) !== 'undefined') {
+  if (query.album) {
     query.album = new RegExp(query.album)
   }
 
-  if (typeof (query.author) !== 'undefined') {
+  if (query.author) {
     query.author = /query.author/
   }
 
-  if (typeof (query.video_id) !== 'undefined') {
+  if (query.video_id) {
     query.video_id = /query.video_id/
   }
 
-  if (typeof (query.next) !== 'undefined') {
+  if (query.next) {
     query._id = { $gte: query.next }
     delete query.next
   }

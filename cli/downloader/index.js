@@ -1,40 +1,35 @@
+#!/usr/bin/node
 const db = require('../../api/init/db')
+const mongoose = require('mongoose')
+const downloader = require('./download')
 
-db('mongodb://localhost/soundman')
-  .then(mongoose => {
-    const cluster = require('cluster')
-    const Music = mongoose.model('Music')
-    let numCPUs = require('os').cpus().length
+const main = async () => {
+  await db('mongodb://localhost/soundman')
+  const Music = mongoose.model('Music')
+  const query = { status: 'pending' }
+  const musics = await Music.find(query).exec()
 
-    if (cluster.isMaster) {
-      Music.find({ status: 'pending' }).count().exec()
-        .then(result => {
-          if (result === 0) {
-            console.log('There is no music to be processed.')
-            process.exit(0)
-          }
+  if (musics.length === 0) {
+    console.log('Any music available for downloading')
+    return
+  }
 
-          console.log(`Got ${result} songs, sending to workers`)
-
-          for (var i = 0; i < numCPUs; i++) {
-            cluster.fork()
-          }
-
-          cluster.on('online', (worker) => {
-            if (result > 0) {
-              result--
-            }
-          })
-
-          cluster.on('exit', (worker, code, signal) => {
-            if (result > 0) {
-              cluster.fork()
-            }
-          })
-        })
-        .catch(e => console.error(e))
-    } else {
-      require('./download')
+  const download = song => {
+    try {
+      return downloader(song)
+    } catch (e) {
+      console.error(e)
+      const find = { _id: song._id }
+      const update = { $inc: { tries: 1 } }
+      return Music.findOneAndUpdate(find, update).exec()
     }
-  })
+  }
+
+  await Promise.all(musics.map(download))
+  console.log(`Download finished for ${musics.length} musics`)
+  process.exit()
+}
+
+main()
+  .then()
   .catch(console.error)

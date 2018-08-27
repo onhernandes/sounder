@@ -2,14 +2,14 @@ const Music = require('mongoose').model('Music')
 const MusicError = require('./error')
 
 module.exports = async (params, body) => {
-  let found = false
+  let music = false
 
   try {
-    found = await Music.findOne({ video_id: params.video_id }).exec()
+    music = await Music.findOne({ video_id: params.video_id }).exec()
 
-    if (!found) {
+    if (!music) {
       throw new MusicError({
-        error: 'not found'
+        error: 'not music'
       }, 404)
     }
   } catch (e) {
@@ -20,20 +20,18 @@ module.exports = async (params, body) => {
     }, 400)
   }
 
-  let keys = ['title', 'cover', 'album', 'author']
+  if (body.status) {
+    delete body.status
+  }
 
-  keys.map(k => {
-    if (body.hasOwnProperty(k) && found.toObject().hasOwnProperty(k) && found[k] !== body[k]) {
-      found[k] = body[k]
-    }
-  })
+  music.set(body)
 
-  if (typeof body.update !== 'undefined' && body.update !== false) {
-    found.status = 'pending'
+  if (body.update) {
+    music.status = 'pending'
   }
 
   try {
-    return await found.save()
+    return await music.save()
   } catch (e) {
     throw new MusicError({
       error: e.name,

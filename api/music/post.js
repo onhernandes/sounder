@@ -4,35 +4,23 @@ const MusicError = require('./error')
 const yt = require('ytdl-core')
 
 async function _post (body) {
-  let post = body
-  let basic = ['title', 'url', 'author', 'album', 'cover', 'playlist', 'spotify']
-
-  if (!post.hasOwnProperty('url')) {
+  if (!body.hasOwnProperty('url')) {
     throw new MusicError({
       error: 'URL not found'
     }, 400)
   }
 
-  // simpliest (and dirty? idk) way to check and validate for parameters
-  Object.keys(post).forEach(key => {
-    // remove any either unused or not allowed parameters
-    if (basic.indexOf(key) === -1) {
-      delete post[key]
-    }
-  })
+  body.video_id = yt.getURLVideoID(body.url)
 
-  post.video_id = yt.getURLVideoID(post.url)
-
-  if (!post.video_id) {
+  if (!body.video_id) {
     throw new MusicError({
       error: 'Could not parse YoutubeID!'
     }, 400)
   }
 
   try {
-    let song = new Music(post)
-    let saved = await song.save()
-    return mongofilter(saved.toObject())
+    let song = await Music.create(body)
+    return mongofilter(song.toObject())
   } catch (e) {
     if (e.code === 11000) {
       throw new MusicError({
@@ -48,27 +36,10 @@ async function _post (body) {
   }
 }
 
-module.exports = async (body) => {
-  if (Array.isArray(body)) {
-    let err = 0
-    let promise = body.map(async it => {
-      try {
-        return await _post(it)
-      } catch (e) {
-        err++
-        return (e.response || e)
-      }
-    })
-
-    let all = await Promise.all(promise)
-
-    if (err < body.length) {
-      return all
-    } else {
-      throw new MusicError(all, 409)
-    }
+module.exports = (body) => {
+  if (!Array.isArray(body)) {
+    body = [body]
   }
 
-  let result = await _post(body)
-  return result
+  return Promise.all(body.map(_post))
 }

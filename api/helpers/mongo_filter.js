@@ -3,6 +3,10 @@ module.exports = (item, list) => {
     list = []
   }
 
+  if (typeof item.toObject === 'function') {
+    item = item.toObject()
+  }
+
   if (list.indexOf('__v') === -1) {
     list.push('__v')
   }

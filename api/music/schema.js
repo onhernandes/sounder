@@ -7,12 +7,11 @@ let musicSchema = new Schema({
   video_id: { type: String, unique: true },
   author: { type: String },
   album: { type: String },
-  cover: { type: String },
+  cover: {
+    type: [String],
+    default: undefined
+  },
   file_name: { type: String },
-  playlist: { type: String },
-  spotify: { type: Boolean, default: true },
-  spotify_status: { type: String },
-  spotify_uri: { type: String },
   tries: { type: Number, default: 0 },
   status: { type: String, default: 'pending' }
 })
@@ -22,17 +21,6 @@ musicSchema.post('update', (doc) => {
 
   doc.save(() => {})
 })
-
-musicSchema.statics.getYoutubeID = (url) => {
-  let regexp = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/i
-  let values = url.match(regexp)
-
-  if (values.length > 1) {
-    return values[1]
-  } else {
-    return false
-  }
-}
 
 musicSchema.statics.increaseTries = async (id) => {
   let item = await this.find({ _id: id }).lean().exec()
@@ -48,7 +36,7 @@ musicSchema.statics.increaseTries = async (id) => {
 }
 
 /*
-* status: pending | downloading | downloaded
+* status: pending | downloading | downloaded | error
 */
 
 module.exports = mongoose.model('Music', musicSchema)

@@ -5,7 +5,7 @@ const fs = require('fs-extra')
 const mongofilter = require('../helpers/mongo_filter')
 
 module.exports = async (params) => {
-  let found
+  let music
 
   if (!params.hasOwnProperty('video_id')) {
     throw new MusicError({
@@ -15,7 +15,7 @@ module.exports = async (params) => {
   }
 
   try {
-    found = await Music.findOneAndRemove({ video_id: { $eq: params.video_id } }).exec()
+    music = await Music.findOneAndRemove({ video_id: { $eq: params.video_id } }).lean().exec()
   } catch (e) {
     throw new MusicError({
       status: 'error',
@@ -23,13 +23,8 @@ module.exports = async (params) => {
     }, 404)
   }
 
-  found = found.toObject()
+  let file = path.resolve(__dirname, '../../downloads/' + music.file_name)
+  await fs.remove(file)
 
-  try {
-    let file = path.resolve(__dirname, '../../models/music/' + found.file_name)
-    await fs.remove(file)
-  } catch (e) {
-  }
-
-  return mongofilter(found)
+  return mongofilter(music)
 }
