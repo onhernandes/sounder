@@ -1,6 +1,6 @@
-const http = require('http')
-const https = require('https')
-const fs = require('fs')
+var http = require('http')
+var https = require('https')
+var fs = require('fs')
 
 /**
  * Downloads data from a given URL then writes to a file
@@ -17,17 +17,17 @@ module.exports = (url, file, validator) => {
     }
   }
 
-  let wstream = fs.createWriteStream(file)
+  var wstream = fs.createWriteStream(file)
 
   return new Promise((resolve, reject) => {
-    let cb = (response) => {
+    var cb = (response) => {
       response.pipe(wstream)
       wstream.on('finish', function () {
         wstream.close(() => resolve(file))
       })
     }
 
-    let req
+    var req
 
     if (url.indexOf('https') !== -1) {
       req = https.get(url, cb)
