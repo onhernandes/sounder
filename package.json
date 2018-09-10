@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "bin": "./bin/soundman",
   "scripts": {
     "test": "node_modules/.bin/jest --runInBand",
     "start": "node app.js",
-    "downloader": "node cli/downloader/index.js",
     "dev": "node_modules/.bin/nodemon app.js"
   },
   "author": "",
@@ -26,6 +26,7 @@
     "spotify-web-api-node": "^2.5.0",
     "valid-url": "^1.0.9",
     "winston": "^2.4.1",
+    "yargs": "^12.0.2",
     "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
