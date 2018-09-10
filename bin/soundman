@@ -1,4 +1,15 @@
 #!/usr/bin/env node
+const argv = require('yargs')
+  .usage('Usage: <url> [options]')
+  .help('h')
+  .alias('h', 'help')
+  .argv
+
+console.log(argv)
+process.exit(0)
+
+
+
 const reqDir = require('require-directory')
 const db = require('../../api/init/db')
 const mongoose = require('mongoose')
@@ -31,6 +42,3 @@ const main = async () => {
   process.exit()
 }
 
-main()
-  .then()
-  .catch(console.error)
