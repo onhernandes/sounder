@@ -97,7 +97,9 @@ const exec = async music => {
   attachments.push(path.join(tmp, `${filename}.mp4`))
 
   await Promise.all(attachments.map(remove))
-  await music.save()
+  if (music.save) {
+    await music.save()
+  }
 
   return destiny
 }

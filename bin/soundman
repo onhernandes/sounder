@@ -1,44 +1,41 @@
 #!/usr/bin/env node
+const addToDb = require('./addToDb')
+const worker = require('./worker')
+const ytdl = require('ytdl-core')
 const argv = require('yargs')
-  .usage('Usage: <url> [options]')
+  .default('add-to-db', false)
+  .default('is-worker', false)
+  .default('title', false)
+  .default('album', false)
+  .default('author', false)
+  .default('cover', false)
   .help('h')
   .alias('h', 'help')
   .argv
 
-console.log(argv)
-process.exit(0)
-
-
-
-const reqDir = require('require-directory')
-const db = require('../../api/init/db')
-const mongoose = require('mongoose')
-const downloader = require('./download')
-
-const main = async () => {
-  await db('mongodb://localhost/soundman')
-  const Music = mongoose.model('Music')
-  const query = { status: 'pending' }
-  const musics = await Music.find(query).exec()
-
-  if (musics.length === 0) {
-    console.log('Any music available for downloading')
-    return
-  }
-
-  const download = song => {
-    try {
-      return downloader(song)
-    } catch (e) {
-      console.error(e)
-      const find = { _id: song._id }
-      const update = { $inc: { tries: 1 } }
-      return Music.findOneAndUpdate(find, update).exec()
-    }
-  }
-
-  await Promise.all(musics.map(download))
-  console.log(`Download finished for ${musics.length} musics`)
-  process.exit()
+const url = argv._.shift()
+const music = {
+  url,
+  title: argv.title,
+  author: argv.author,
+  album: argv.album,
+  cover: argv.cover,
+  video_id: ytdl.getVideoID(url)
 }
+
+if (argv.addToDb) {
+  const o = {}
+  Object.keys(music).forEach(k => music[k] ? o[k] = music[k] : false)
+  return addToDb(o).then().catch(console.error)
+}
+
+if (argv.isWorker) {
+  return worker().then().catch(console.error)
+}
+
+const downloader = require('./downloader')
+
+downloader(music)
+  .then(p => console.log('Music downloaded! See more at ' + p))
+  .catch(console.error)
 
