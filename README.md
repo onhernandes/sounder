@@ -15,6 +15,11 @@ Data is sent to MongoDB then is stored as pending downloads. You can use the fil
 
 -----------
 
+## The CLI
+
+Yes, you can use as a CLI too! 
+Check out: `./bin/soundman --help`
+
 ## How to Use
 
 You could just import our [Postman's Collection](Soundman.collection.json) and try right now!
