@@ -34,7 +34,6 @@ if (argv.isWorker) {
 }
 
 const downloader = require('./downloader')
-
 downloader(music)
   .then(p => console.log('Music downloaded! See more at ' + p))
   .catch(console.error)
