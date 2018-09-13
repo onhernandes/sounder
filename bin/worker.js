@@ -1,17 +1,15 @@
-const db = require('../../api/init/db')
-const mongoose = require('mongoose')
-const downloader = require('./download')
-
-const main = async () => {
+module.exports = async () => {
   await db('mongodb://localhost/soundman')
   const Music = mongoose.model('Music')
   const query = { status: 'pending' }
   const musics = await Music.find(query).exec()
 
   if (musics.length === 0) {
-    console.log('Any music available for downloading')
+    console.log('There are no songs available to download.');
     return
   }
+
+  console.log(`Got ${musics.length} song(s) to download...starting.`);
 
   const download = song => {
     try {
@@ -24,11 +22,6 @@ const main = async () => {
     }
   }
 
-  await Promise.all(musics.map(download))
-  console.log(`Download finished for ${musics.length} musics`)
-  process.exit()
+  return Promise.all(musics.map(download))
 }
 
-main()
-  .then()
-  .catch(console.error)

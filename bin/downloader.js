@@ -82,24 +82,33 @@ const exec = async music => {
   ])
 
   // Download music as MP4 video
+  process.stdout.write(`Downloading ${title} as MP4 video...`);
   await download(music.url, path.join(tmp, `${filename}.mp4`))
+  process.stdout.write('download finished.\n');
 
   // Convert to MP3
   const destiny = path.join(os.homedir(), 'soundman/', `${filename}.mp3`)
+  process.stdout.write(`Converting to MP3...`);
   await convert(path.join(tmp, `${filename}.mp4`), destiny)
+  process.stdout.write('converted.\n');
 
   // Write metadata
   const attachments = await generateCover(music.cover, `https://i.ytimg.com/vi/${music.video_id}/hqdefault.jpg`)
+  process.stdout.write(`Writing metadata into MP3 file...`);
   await writeMetadata({ title, album, attachments, artist }, destiny)
+  process.stdout.write('done.\n');
 
   music.status = 'downloaded'
 
   attachments.push(path.join(tmp, `${filename}.mp4`))
 
   await Promise.all(attachments.map(remove))
-  await music.save()
+  if (music.save) {
+    await music.save()
+  }
 
   return destiny
 }
 
 module.exports = exec
+

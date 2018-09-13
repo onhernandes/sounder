@@ -1,12 +1,12 @@
 {
   "name": "soundman",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "A CLI for downloading Youtube videos as mp3 files with metadata",
   "main": "app.js",
+  "bin": "./bin/soundman",
   "scripts": {
     "test": "node_modules/.bin/jest --runInBand",
     "start": "node app.js",
-    "downloader": "node cli/downloader/index.js",
     "dev": "node_modules/.bin/nodemon app.js"
   },
   "author": "",
@@ -23,9 +23,9 @@
     "mongoose": "^5.0.12",
     "q": "^1.5.1",
     "require-directory": "^2.1.1",
-    "spotify-web-api-node": "^2.5.0",
     "valid-url": "^1.0.9",
     "winston": "^2.4.1",
+    "yargs": "^12.0.2",
     "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
