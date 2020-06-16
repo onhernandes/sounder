@@ -1,8 +1,8 @@
 {
   "name": "soundman",
+  "private": true,
   "version": "2.0.0",
-  "description": "A CLI for downloading Youtube videos as mp3 files with metadata",
-  "main": "app.js",
+  "description": "An API for downloading Youtube videos as mp3 files with metadata",
   "bin": "./bin/soundman",
   "scripts": {
     "test": "node_modules/.bin/jest --runInBand",
@@ -12,32 +12,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
-    "body-parser": "^1.18.2",
-    "ejs": "^2.5.8",
-    "express": "^4.16.3",
-    "express-async-handler": "^1.1.3",
-    "ffmetadata": "^1.5.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "fs-extra": "^5.0.0",
-    "mongoose": "^5.0.12",
-    "q": "^1.5.1",
-    "require-directory": "^2.1.1",
-    "valid-url": "^1.0.9",
-    "winston": "^2.4.1",
-    "yargs": "^12.0.2",
-    "ytdl-core": "^0.20.2"
+    "@types/node": "^14.0.13"
   },
   "devDependencies": {
-    "husky": "^0.14.3",
-    "jest": "^22.4.2",
-    "mongodb-memory-server": "^1.7.3",
+    "@typescript-eslint/eslint-plugin": "^3.3.0",
+    "@typescript-eslint/parser": "^3.3.0",
+    "eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^1.17.1",
     "standard": "^11.0.1"
-  },
-  "jest": {
-    "globalSetup": "setup.js",
-    "globalTeardown": "teardown.js",
-    "testEnvironment": "js-env.js"
   }
 }
