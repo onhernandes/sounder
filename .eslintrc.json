@@ -1,6 +1,5 @@
 {
     "env": {
-        "commonjs": true,
         "es6": true,
         "node": true
     },
@@ -13,7 +12,8 @@
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 11
+        "ecmaVersion": 11,
+        "sourceType": "module"
     },
     "plugins": [
         "@typescript-eslint"

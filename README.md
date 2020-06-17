@@ -6,23 +6,21 @@ Download YouTube videos as MP3, setting metadata like artist, album, cover and m
 
 Use:
 - NodeJS
-- Express + Mongoose
+- KoaJS + TypeORM (MySQL)
 - ytdl-core
 - fluent-ffmpeg
 - ffmetadata
-
-Data is sent to MongoDB then is stored as pending downloads. You can use the files in cli/ to download.
 
 -----------
 
 ## The CLI
 
 Yes, you can use as a CLI too! 
-Check out: `./bin/soundman --help`
+Check out: `./bin/sounder --help`
 
 ## How to Use
 
-You could just import our [Postman's Collection](Soundman.collection.json) and try right now!
+You could just import our [Postman's Collection](Sounder.collection.json) and try right now!
 
 ## Downloading
 
