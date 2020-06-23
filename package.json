@@ -5,7 +5,10 @@
    "description": "An API for downloading Youtube videos as mp3 files with metadata",
    "bin": "./bin/soundman",
    "scripts": {
-      "start": "ts-node src/index.ts"
+      "start": "ts-node src/index.ts",
+      "lint": "eslint './src/**'",
+      "lint:fix": "eslint './src/**' --fix",
+      "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts"
    },
    "author": "",
    "license": "ISC",
@@ -16,10 +19,12 @@
       "koa": "^2.12.1",
       "koa-bodyparser": "^4.3.0",
       "koa-router": "^9.0.1",
+      "mysql": "^2.14.1",
       "mysql2": "^2.1.0",
       "reflect-metadata": "^0.1.10",
       "typeorm": "0.2.25",
-      "mysql": "^2.14.1"
+      "typescript": "^3.9.5",
+      "ytdl-core": "^2.1.7"
    },
    "devDependencies": {
       "@types/node": "^8.0.29",
@@ -31,9 +36,8 @@
       "eslint-plugin-node": "^11.1.0",
       "eslint-plugin-promise": "^4.2.1",
       "eslint-plugin-standard": "^4.0.1",
-      "nodemon": "^1.17.1",
+      "nodemon": "^1.19.4",
       "standard": "^11.0.1",
-      "ts-node": "^3.3.0",
-      "typescript": "^3.3.3333"
+      "ts-node": "^3.3.0"
    }
 }
