@@ -4,20 +4,18 @@
         "node": true
     },
     "extends": [
-        "standard"
+        "standard-with-typescript"
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 11,
+        "project": "./tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "rules": {
+      "@typescript-eslint/no-require-imports": 2,
+      "@typescript-eslint/no-throw-literal": 0
     }
 }

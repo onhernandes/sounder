@@ -6,13 +6,13 @@ import path from 'path'
 import bodyparser from 'koa-bodyparser'
 import songs from './routes/songs'
 
-const connect = () => {
+const connect = async (): Promise<any> => {
   const entitiesPath: string = path.join(
     __dirname,
     '/db/*'
   )
 
-  return createConnection({
+  return await createConnection({
     type: 'mysql',
     host: config.get('mysql.host'),
     port: config.get('mysql.port'),
@@ -46,4 +46,4 @@ const init = async (): Promise<void> => {
   console.log('API is running freely')
 }
 
-init()
+init().then().catch(console.error)
