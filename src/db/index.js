@@ -7,6 +7,9 @@ module.exports = new Sequelize(
   config.get('mysql.password'),
   {
     host: config.get('mysql.host'),
-    dialect: 'mysql'
+    dialect: 'mysql',
+    define: {
+      version: true
+    }
   }
 )
